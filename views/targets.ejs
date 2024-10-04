@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Targets</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        body {
+            font-family: 'Century Gothic', sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Adjust Logo */
+        .navbar .logo img {
+            height: 50px;
+            width: auto;
+            margin-right: 10px;
+        }
+
+        /* Navbar styles */
+        .navbar {
+            background-color: #7b8b9c;
+            position: fixed;
+            top: 0;
+            width: 98%;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 5px;
+        }
+
+        .navbar ul li {
+            position: relative;
+        }
+
+        .navbar ul li a {
+            display: block;
+            padding: 8px 12px;
+            color: #ecf0f1;
+            text-decoration: none;
+            font-weight: normal;
+            transition: background-color 0.3s ease;
+        }
+
+        .navbar ul li a:hover {
+            background-color: #e27618;
+            border-radius: 5px;
+        }
+
+        .navbar ul li a.active {
+            background-color: #7b8b9c;
+            color: #ffffff;
+        }
+
+        /* Dropdown menu styles */
+        .dropdown {
+            display: none;
+            position: absolute;
+            background-color: #7b8b9c;
+            min-width: 160px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+            top: 100%;
+            left: 0;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .navbar ul li:hover .dropdown,
+        .navbar ul li:focus-within .dropdown {
+            display: block;
+            opacity: 1;
+        }
+
+        .dropdown a {
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            color: #ffffff;
+            text-align: left;
+        }
+
+        .dropdown a:hover {
+            background-color: #e27618;
+        }
+
+        /* Main content styles */
+        .content {
+            padding-top: 150px;
+            color: #7b8b9c;
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #7b8b9c;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+
+        /* Search Bar Styles */
+        .search-bar {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .search-bar input {
+            padding: 10px;
+            width: 40%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        /* Table styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            border: 1px solid #dfe6e9;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #7b8b9c;
+            color: #ffffff;
+        }
+
+        td {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 40%;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .message {
+            display: none;
+            padding: 10px;
+            background-color: #4caf50;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .error-message {
+            display: none;
+            padding: 10px;
+            background-color: #f44336;
+            color: white;
+            border-radius: 5px;
+        }
+
+        /* Loading spinner styles */
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #7b8b9c;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: auto;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<!-- Navbar -->
+<nav class="navbar">
+    <a href="/home" class="logo">
+        <img src="/assets/logo.png" alt="Company Logo">
+    </a>
+    <ul>
+        <li><a href="/home">Home</a></li>
+        <li>
+            <a href="/customers">Customers</a>
+            <ul class="dropdown">
+                <li><a href="/customers/groups">Groups</a></li>
+                <li><a href="/customers/wholesalers">Wholesalers</a></li>
+            </ul>
+        </li>
+        <li><a href="/sales">Sales</a></li>
+        <li>
+            <a href="/financials">Financials</a>
+            <ul class="dropdown">
+                <li><a href="/financials/tiers">Tiers</a></li>
+                <li><a href="/financials/adhoc">Ad-Hoc</a></li>
+                <li><a href="/financials/targets">Targets</a></li>
+                <li><a href="/financials/tax-invoices">Tax Invoices</a></li>
+                <li><a href="/financials/company-details">Company Details</a></li>
+            </ul>
+        </li>
+        <li><a href="/logout">Logout</a></li>
+    </ul>
+</nav>
+
+
+<div id="message" class="message">Action completed successfully!</div>
+<div id="errorMessage" class="error-message">An error occurred.</div>
+
+<!-- Main Content -->
+<br>
+<div class="content">
+    <h1>Customer Targets</h1>
+
+    <!-- Search Bar -->
+    <div class="search-bar">
+        <input type="text" id="searchInput" oninput="debouncedSearch()" placeholder="Search customer targets...">
+    </div>
+
+    <!-- Targets Table -->
+    <table id="targetsTable">
+        <thead>
+            <tr>
+                <th>Customer Name</th>
+                <th>Target</th>
+                <th>Data Fee%</th> <!-- New Data Fee% Column -->
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="targetsTableBody">
+        </tbody>
+    </table>
+
+    <!-- Loading Spinner -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Loading more data...</p>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Edit Target</h2>
+        <form id="editTargetForm">
+            <label for="editCustomerName">Customer Name:</label>
+            <input type="text" id="editCustomerName" name="customer_name" required>
+            <label for="editTarget">Target:</label>
+            <input type="text" id="editTarget" name="target" required>
+            <label for="editDataFee">Data Fee:</label>
+			<input type="text" id="editDataFee" name="data_fee" required>
+            <button type="submit">Save Changes</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    let currentPage = 1;
+    const pageSize = 10;
+    let loading = false;
+    let reachedEnd = false;
+    let allTargets = [];
+    let searchTimeout;
+
+    // Fetch and load more customer targets with pagination
+    async function loadMoreTargets() {
+        if (loading || reachedEnd) return;
+        loading = true;
+        document.getElementById('loading').style.display = 'block';
+
+        const response = await fetch(`/financials/targets/list?page=${currentPage}&size=${pageSize}`);
+        const result = await response.json();
+
+        if (result.success) {
+            const targets = result.data;
+            allTargets = [...allTargets, ...targets];
+            appendTargetsToTable(targets);
+
+            if (targets.length < pageSize) {
+                reachedEnd = true;
+                document.getElementById('loading').style.display = 'none';
+            }
+
+            currentPage++;
+            loading = false;
+            document.getElementById('loading').style.display = 'none';
+        } else {
+            console.error('Failed to fetch targets:', result.message);
+            document.getElementById('loading').style.display = 'none';
+        }
+    }
+
+    // Append targets to the table
+    function appendTargetsToTable(targets) {
+        const tableBody = document.getElementById('targetsTableBody');
+        const rowsFragment = document.createDocumentFragment();
+
+        targets.forEach(target => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${target.customer_name}</td>
+                <td>${target.target}</td>
+                <td>${target.data_fee || 'N/A'}</td> <!-- New Data Fee% column in row -->
+                <td>
+                    <button class="edit-btn" onclick="editTarget(${target.id})">Edit</button>
+                    <button class="delete-btn" onclick="deleteTarget(${target.id})">Delete</button>
+                </td>
+            `;
+            rowsFragment.appendChild(row);
+        });
+
+        tableBody.appendChild(rowsFragment);
+    }
+
+    // Search functionality
+    function debouncedSearch() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(searchTable, 300);
+    }
+
+    async function searchTable() {
+        const input = document.getElementById('searchInput').value.trim().toLowerCase();
+
+        if (input === "") {
+            resetTable();
+            return;
+        }
+
+        const filteredTargets = allTargets.filter(target => 
+            target.customer_name.toLowerCase().includes(input)
+        );
+
+        if (filteredTargets.length > 0) {
+            displaySearchResults(filteredTargets);
+        } else {
+            const response = await fetch(`/financials/targets/search?query=${encodeURIComponent(input)}`);
+            const result = await response.json();
+            displaySearchResults(result.data);
+        }
+    }
+
+    function displaySearchResults(targets) {
+        const tableBody = document.getElementById('targetsTableBody');
+        tableBody.innerHTML = '';
+        appendTargetsToTable(targets);
+    }
+
+    function resetTable() {
+        document.getElementById('targetsTableBody').innerHTML = '';
+        currentPage = 1;
+        allTargets = [];
+        loadMoreTargets();
+    }
+
+    // Open and pre-fill the modal for editing a target
+    function editTarget(id) {
+        const targetToEdit = allTargets.find(t => t.id === id);
+        if (!targetToEdit) return;
+
+        // Open the modal
+        const modal = document.getElementById("editModal");
+        modal.style.display = "block";
+
+        // Pre-fill the form
+        document.getElementById("editCustomerName").value = targetToEdit.customer_name;
+        document.getElementById("editTarget").value = targetToEdit.target;
+        document.getElementById("editDataFee").value = targetToEdit.data_fee || ''; // Pre-fill Data Fee% input
+
+        // Handle form submission
+        const form = document.getElementById("editTargetForm");
+        form.onsubmit = async function (event) {
+            event.preventDefault(); // Prevent form submission
+            const updatedCustomerName = document.getElementById("editCustomerName").value;
+            const updatedTarget = document.getElementById("editTarget").value;
+            const updatedDataFee = document.getElementById("editDataFee").value; // Get Data Fee%
+
+            if (updatedCustomerName && updatedTarget && updatedDataFee) {
+                await updateTarget(id, updatedCustomerName, updatedTarget, updatedDataFee);
+                modal.style.display = "none"; // Close the modal
+            }
+        };
+    }
+
+    // Close the modal when the close button is clicked
+    document.querySelector(".close").onclick = function() {
+        document.getElementById("editModal").style.display = "none";
+    };
+
+    // Close the modal if the user clicks outside the modal content
+    window.onclick = function(event) {
+        const modal = document.getElementById("editModal");
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    };
+
+async function updateTarget(id, customerName, target, dataFee) {
+    try {
+        const response = await fetch(`/financials/targets/${id}/edit`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ customer_name: customerName, target: target, data_fee: dataFee }),
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            allTargets = allTargets.map(t => t.id === id ? { id, customer_name: customerName, target, data_fee: dataFee } : t);
+            displaySearchResults(allTargets);
+            showMessage('Target updated successfully!');
+        } else {
+            console.error('Failed to update target:', result.message);
+        }
+    } catch (error) {
+        console.error('Error updating target:', error);
+    }
+}
+
+
+    // Delete customer and targets by ID
+async function deleteTarget(id) {
+    try {
+        const response = await fetch(`/financials/targets/${id}/delete`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            allTargets = allTargets.filter(target => target.id !== id);
+            displaySearchResults(allTargets);
+            showMessage('Target deleted successfully!');
+        } else {
+            console.error('Failed to delete target:', result.message);
+        }
+    } catch (error) {
+        console.error('Error deleting target:', error);
+    }
+}
+function showMessage(message) {
+    const messageElement = document.getElementById('message');
+    messageElement.textContent = message;
+    messageElement.style.display = 'block';
+    setTimeout(() => {
+        messageElement.style.display = 'none';
+    }, 3000);
+}
+
+
+    // Initial load
+    loadMoreTargets();
+</script>
+
+</body>
+</html>

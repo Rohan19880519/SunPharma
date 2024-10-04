@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customers - Portal</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        body {
+            font-family: 'Century Gothic', sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navbar styles */
+        .navbar {
+            background-color: #7b8b9c; /* Navbar background color */
+            position: fixed; /* Fixes the navbar at the top */
+            top: 0; /* Positions it at the very top */
+            width: 98%; /* Full width */
+            z-index: 1000; /* Stacks it above other elements */
+            display: flex; /* Uses flexbox for layout */
+            justify-content: space-between; /* Spaces items evenly */
+            align-items: center; /* Vertically centers items */
+            padding: 10px 20px; /* Padding inside the navbar */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds shadow */
+        }
+
+        .navbar ul {
+            list-style-type: none; /* Removes bullet points */
+            margin: 0;
+            padding: 0;
+            display: flex; /* Displays list items horizontally */
+            gap: 5px; /* Space between menu items */
+        }
+
+        .navbar ul li {
+            position: relative; /* For positioning dropdowns */
+        }
+
+        .navbar ul li a {
+            display: block; /* Makes the link fill the list item */
+            padding: 8px 12px; /* Padding around the link */
+            color: #ecf0f1; /* Link text color */
+            text-decoration: none; /* Removes underline */
+            font-weight: normal; /* Normal font weight (not bold) */
+            transition: background-color 0.3s ease; /* Smooth hover effect */
+        }
+
+        .navbar ul li a:hover {
+            background-color: #e27618; /* Background on hover */
+            border-radius: 5px; /* Rounds the corners */
+        }
+
+        .navbar ul li a.active {
+            background-color: #7b8b9c; /* Active link background */
+            color: #ffffff; /* Active link text color */
+        }
+
+
+		/* Dropdown styles */
+		.dropdown {
+			display: none;
+			position: absolute;
+			background-color: #7b8b9c;
+			min-width: 160px;
+			box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+			z-index: 1;
+			top: 100%; /* Position the dropdown below the parent */
+			left: 0;   /* Align it to the left of the parent */
+			opacity: 0;
+			transition: opacity 0.3s ease;
+		}
+
+		/* Dropdown will appear when hovered over the parent li or clicked */
+		.navbar ul li:hover .dropdown,
+		.navbar ul li:focus-within .dropdown {
+			display: block;
+			opacity: 1;
+		}
+
+		/* Hide dropdown when focus is lost */
+		.navbar ul li .dropdown {
+			pointer-events: none;  /* Prevent unwanted interactions while hidden */
+		}
+
+		.navbar ul li:hover .dropdown,
+		.navbar ul li:focus-within .dropdown {
+			pointer-events: auto;
+		}
+
+		/* Dropdown link styles */
+		.dropdown a {
+			padding: 12px 16px;
+			text-decoration: none;
+			display: block;
+			color: #ffffff;
+			text-align: left;
+		}
+
+		.dropdown a:hover {
+			background-color: #e27618;
+		}
+        /* Show dropdown on hover */
+        .navbar ul li:hover .dropdown {
+            display: block;
+        }
+
+        /* Logo styles */
+        .navbar .logo img {
+            height: 40px;
+            width: auto;
+        }
+
+        /* Main content styles */
+        .content {
+            padding-top: 150px;
+            color: #7b8b9c;
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #7b8b9c;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+
+        /* Search bar styles */
+        .search-container {
+			margin-top: 40px; /* Add margin-top to push the search container down */
+			margin-bottom: 30px;
+			text-align: center;
+		}
+
+		.search-container input[type="text"] {
+			width: 40%;
+			padding: 10px; /* Reduce padding to prevent it from being too large */
+			border: 2px solid #ccc;
+			border-radius: 5px;
+		}
+
+        /* Table styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        table, th, td {
+            border: 1px solid #dfe6e9;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #7b8b9c;
+            color: #ffffff;
+        }
+
+        td {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Upload form styles */
+        .upload-form {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .upload-form input[type="file"], .upload-form button {
+            padding: 10px;
+            background-color: #7ed957;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .upload-form button {
+            margin-left: 10px;
+        }
+
+        .upload-form input[type="file"] {
+            cursor: pointer;
+        }
+
+        /* Slider styles */
+        .slider {
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        .slider input[type="checkbox"] {
+            position: relative;
+            width: 40px;
+            height: 20px;
+            appearance: none;
+            background: #d97a57;
+            outline: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .slider input[type="checkbox"]:checked {
+            background: #7ed957;
+        }
+
+        .slider input[type="checkbox"]::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #ffffff;
+            border-radius: 50%;
+            top: 0;
+            left: 0;
+            transition: left 0.3s ease;
+        }
+
+        .slider input[type="checkbox"]:checked::before {
+            left: 20px;
+        }
+
+        /* Button styles */
+        .edit-btn, .delete-btn {
+            cursor: pointer;
+            color: #ffffff;
+            background-color: #7b8b9c;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .edit-btn:hover, .delete-btn:hover {
+            background-color: #7b8b9c;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #56c275;
+            width: 60%;
+            border-radius: 10px;
+            text-align: left;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-content form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .modal-content label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            flex-basis: 35%;
+            margin-right: 10px;
+        }
+
+        .form-group input {
+            flex-basis: 60%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .modal-content button {
+            padding: 10px 20px;
+            background-color: #7b8b9c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .modal-content button:hover {
+            background-color: #7b8b9c;
+        }
+
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close-btn:hover {
+            color: #000;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+
+<!-- Navbar -->
+<nav class="navbar">
+    <a href="/home" class="logo">
+        <img src="/assets/logo.png" alt="Company Logo">
+    </a>
+    <ul>
+        <li><a href="/home">Home</a></li>
+        <li>
+            <a href="/customers">Customers</a>
+            <ul class="dropdown">
+                <li><a href="/customers/groups">Groups</a></li>
+                <li><a href="/customers/wholesalers">Wholesalers</a></li>
+            </ul>
+        </li>
+        <li><a href="/sales">Sales</a></li>
+        <li>
+            <a href="/financials">Financials</a>
+            <ul class="dropdown">
+                <li><a href="/financials/tiers">Tiers</a></li>
+                <li><a href="/financials/adhoc">Ad-Hoc</a></li>
+                <li><a href="/financials/targets">Targets</a></li>
+                <li><a href="/financials/tax-invoices">Tax Invoices</a></li>
+                <li><a href="/financials/company-details">Company Details</a></li> <!-- New Company Details link -->
+            </ul>
+        </li>
+        <li><a href="/logout">Logout</a></li>
+    </ul>
+</nav>
+
+	
+    <!-- Main content of the customers page -->
+    <div class="content">
+	<div class="content">
+ 
+
+        <!-- Search Bar -->
+        <div class="search-container">
+            <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search for customers...">
+        </div>
+
+        <!-- Excel File Upload Form -->
+        <div class="upload-form">
+            <form action="/upload-customers" method="POST" enctype="multipart/form-data">
+                <input type="file" name="fileUpload" accept=".xlsx, .xls" required>
+                <button type="submit">Upload Customers</button>
+            </form>
+        </div>
+
+        <table id="customersTable">
+            <thead>
+                <tr>
+                    <th>Customer Name</th>
+                    <th>Registered Company Name</th>
+                    <th>Sliders</th>
+					<th>Actions</th>
+                </tr>
+            </thead>
+			<tbody>
+				<% customers.forEach(function(customer) { %>
+					<tr class="customer-row" data-customer='<%= JSON.stringify(customer) %>'>
+						<td><%= customer.customerName %></td>
+						<td><%= customer.companyName %></td>
+						<td>
+							<!-- Target Based Slider -->
+							<label class="slider">
+								Target Based: <input type="checkbox" class="target-slider" data-id="<%= customer.customerId %>" <%= customer.targetBased ? 'checked' : '' %>>
+							</label>
+
+							<!-- Tier Based Slider -->
+							<label class="slider">
+								Tier Based: <input type="checkbox" class="tier-slider" data-id="<%= customer.customerId %>" <%= customer.tierBased ? 'checked' : '' %>>
+							</label>
+
+							<!-- Adhoc Based Slider -->
+							<label class="slider">
+								Adhoc Based: <input type="checkbox" class="adhoc-slider" data-id="<%= customer.customerId %>" <%= customer.adhocBased ? 'checked' : '' %>>
+							</label>
+
+							<!-- Group Slider and buttons -->
+							<label class="slider">
+								Group: <input type="checkbox" class="group-slider" data-id="<%= customer.customerId %>" <%= customer.groupYesNo ? 'checked' : '' %>>
+							</label>
+							</td>
+							<td>
+							
+
+							<!-- Container for dynamically adding buttons (View and Upload) -->
+							<div class="associated-customers-container">
+							<% if (customer.groupYesNo === 'Yes') { %>
+									<!-- Editable input for subCustomerName -->
+									<div class="form-group">
+										<label for="editSubCustomerName_<%= customer.customerId %>">Edit SubCustomer Name:</label>
+										<input type="text" id="editSubCustomerName_<%= customer.customerId %>" 
+											   class="edit-subCustomerName" 
+											   data-id="<%= customer.customerId %>" 
+											   value="<%= customer.subCustomerName %>">
+									</div>
+
+									<!-- Button to view associate customers -->
+									<button class="view-sub-customers" data-id="<%= customer.customerId %>">View Associate Customers</button>
+
+									<!-- Modal for editing associated customers -->
+									<div id="associateCustomersModal_<%= customer.customerId %>" class="modal">
+										<div class="modal-content">
+											<span class="close-btn">&times;</span>
+											<h2>Edit Associate Customers</h2>
+											<div id="associateCustomersContainer_<%= customer.customerId %>"></div>
+											<!-- Container to dynamically load and edit customers -->
+											<button id="saveAssociateCustomers" class="edit-btn">Save Changes</button>
+										</div>
+									</div>
+
+									<!-- Upload button for associated stores file -->
+									<form class="upload-associated-stores-form" method="POST" enctype="multipart/form-data" action="/upload-associated-stores">
+										<input type="hidden" name="customerId" value="<%= customer.customerId %>">
+										<input type="file" name="associatedStoresFile" accept=".xlsx, .xls" required>
+										<button type="submit">Upload Stores</button>
+									</form>
+
+								<% } %>
+							</div>
+						</td>
+					</tr>
+				<% }); %>
+			</tbody>
+
+	<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    // Existing sliders (Target, Tier, Adhoc)
+    document.querySelectorAll('.slider input[type="checkbox"]').forEach(slider => {
+        // Prevent modal opening on slider toggle
+        slider.addEventListener('click', function (e) {
+            e.stopPropagation(); // Prevents row click from triggering modal
+        });
+
+        // Handle slider state change and send update request to the backend
+        slider.addEventListener('change', function () {
+            const customerId = this.getAttribute('data-id'); // Get the customer ID
+            const field = this.classList.contains('target-slider') ? 'targetBased' :
+                          this.classList.contains('tier-slider') ? 'tierBased' :
+                          this.classList.contains('adhoc-slider') ? 'adhocBased' : 'groupYesNo';
+
+            // If slider is checked, send 'Activated'; otherwise, send null (or any other fallback)
+            const value = this.checked ? 'Activated' : null;
+
+            // Send the updated value to the backend
+            fetch(`/customers/update-slider`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ customerId, field, value })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Success: Do nothing (silent update)
+                if (!data.success) {
+                    console.error('Error updating status.');
+                }
+            })
+            .catch(err => {
+                console.error('Error updating slider:', err);
+            });
+        });
+    });
+
+		document.addEventListener('DOMContentLoaded', function () {
+			// Event delegation for dynamically created upload forms
+			document.querySelectorAll('.upload-associated-stores-form').forEach(form => {
+				form.addEventListener('submit', function (event) {
+					event.preventDefault(); // Prevent the default form submission
+
+					const formData = new FormData(this); // Create FormData from the form
+					const actionUrl = this.action; // Get the action URL from the form
+
+					fetch(actionUrl, {
+						method: 'POST',
+						body: formData,
+					})
+					.then(response => response.json())
+					.then(data => {
+						console.log(data); // Log the response data
+						if (data.success) {
+							alert('Associated stores uploaded successfully!');
+						} else {
+							alert('Error: ' + data.message);
+						}
+					})
+					.catch(error => {
+						console.error('Error uploading stores:', error);
+					});
+				});
+			});
+		});
+
+
+// Group slider functionality for toggling "View Associate Customers" and "Upload Stores" buttons
+document.querySelectorAll('.group-slider').forEach(slider => {
+    const customerId = slider.getAttribute('data-id');
+
+    // Load state from backend (this would ideally come from the server-side when rendering the page)
+    if (slider.checked) {
+        // If the slider is checked, display the buttons and forms
+        addButtonsAndForm(slider);
+    }
+
+    slider.addEventListener('change', function () {
+        const isChecked = this.checked;
+
+        if (isChecked) {
+            addButtonsAndForm(this);
+        } else {
+            removeButtonsAndForm(this);
+        }
+
+        // Optionally: Send the updated state to the server to persist the slider state
+        // (You would need to implement this part on the backend)
+        // Example:
+        // fetch(`/update-group-slider-state/${customerId}`, {
+        //     method: 'POST',
+        //     body: JSON.stringify({ isChecked }),
+        //     headers: { 'Content-Type': 'application/json' }
+        // });
+    });
+});
+
+function addButtonsAndForm(slider) {
+    const customerId = slider.getAttribute('data-id');
+    let container = slider.closest('.customer-row').querySelector('.associated-customers-container');
+    let button = container.querySelector('.view-sub-customers');
+    let uploadForm = container.querySelector('.upload-associated-stores-form');
+
+    // Check if button and form already exist
+    if (!button) {
+        // Create and append "View Associate Customers" button
+        const newButton = document.createElement('button');
+        newButton.classList.add('view-sub-customers');
+        newButton.textContent = 'View Associate Customers';
+        newButton.setAttribute('data-id', customerId);
+        container.appendChild(newButton);
+
+        // Create and append the file upload form
+        const newUploadForm = document.createElement('form');
+        newUploadForm.classList.add('upload-associated-stores-form');
+        newUploadForm.method = 'POST';
+        newUploadForm.enctype = 'multipart/form-data';
+        newUploadForm.action = '/upload-associated-stores';
+
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'customerId';
+        hiddenInput.value = customerId;
+        newUploadForm.appendChild(hiddenInput);
+
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.name = 'associatedStoresFile';
+        fileInput.accept = '.xlsx, .xls';
+        fileInput.required = true;
+        newUploadForm.appendChild(fileInput);
+
+        const uploadButton = document.createElement('button');
+        uploadButton.textContent = 'Upload Stores';
+        newUploadForm.appendChild(uploadButton);
+
+        container.appendChild(newUploadForm);
+    }
+}
+
+function removeButtonsAndForm(slider) {
+    let container = slider.closest('.customer-row').querySelector('.associated-customers-container');
+    let button = container.querySelector('.view-sub-customers');
+    let uploadForm = container.querySelector('.upload-associated-stores-form');
+
+    if (button) button.remove();
+    if (uploadForm) uploadForm.remove();
+}
+
+
+
+// Handle the "View Associate Customers" button click event
+document.addEventListener('click', function (event) {
+    if (event.target.classList.contains('view-sub-customers')) {
+        const customerId = event.target.getAttribute('data-id');
+        
+        // Fetch and display the associated stores in the modal
+        fetch(`/customers/${customerId}/sub-customers`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Fetched customers:', data.subCustomers); // Debugging to ensure we have customer data
+                displayAssociatedCustomers(data.subCustomers);
+            });
+    }
+});
+
+// Display associated customers in the modal
+function displayAssociatedCustomers(customers) {
+	const modal = document.getElementById('customerModal');
+	const modalContent = modal.querySelector('.modal-content');
+
+	// Clear previous content
+	modalContent.innerHTML = '<span class="close-btn">&times;</span><h2>Associated Customers</h2>';
+
+	customers.forEach(customer => {
+		const customerElement = document.createElement('div');
+		customerElement.textContent = customer.name; // Assuming 'name' is a property of the customer
+		modalContent.appendChild(customerElement);
+	});
+	
+	
+
+	modal.style.display = 'flex'; // Show the modal
+}
+
+    // Close modal when close button is clicked
+    document.querySelector('.close-btn').addEventListener('click', function () {
+        document.getElementById('customerModal').style.display = 'none';
+    });
+});
+
+
+
+// Display associated customers in the modal with Edit/Delete options
+function displayAssociatedCustomers(customers) {
+    const modal = document.getElementById('customerModal');
+    const modalContent = modal.querySelector('.modal-content');
+
+    // Clear previous content
+    modalContent.innerHTML = '<span class="close-btn">&times;</span><h2>Associated Customers</h2>';
+
+    customers.forEach(customer => {
+        const customerElement = document.createElement('div');
+        customerElement.classList.add('customer-item');
+        customerElement.textContent = customer.name; // Assuming 'name' is a property of the customer
+
+        // Create Edit button
+        const editButton = document.createElement('button');
+        editButton.textContent = 'Edit';
+        editButton.classList.add('edit-customer');
+        editButton.setAttribute('data-id', customer.id);
+
+        // Temporary style to make sure buttons are visible
+        editButton.style.backgroundColor = 'yellow';
+        editButton.style.marginLeft = '10px';
+
+        // Create Delete button
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.classList.add('delete-customer');
+        deleteButton.setAttribute('data-id', customer.id);
+
+        // Temporary style to make sure buttons are visible
+        deleteButton.style.backgroundColor = 'red';
+        deleteButton.style.marginLeft = '10px';
+
+        // Append buttons to customer element
+        customerElement.appendChild(editButton);
+        customerElement.appendChild(deleteButton);
+
+        // Debug: Log each customer and buttons to verify they're appended
+        console.log('Appending customer:', customer.name, 'with Edit and Delete buttons:', editButton, deleteButton);
+
+        // Append customer element to modal content
+        modalContent.appendChild(customerElement);
+    });
+
+    modal.style.display = 'flex'; // Show the modal
+}
+
+// Close modal when close button is clicked
+document.addEventListener('click', function (event) {
+    if (event.target.classList.contains('close-btn')) {
+        document.getElementById('customerModal').style.display = 'none';
+    }
+});
+
+
+
+
+
+
+        function searchTable() {
+            let input = document.getElementById('searchInput');
+            let filter = input.value.toUpperCase();
+            let table = document.getElementById('customersTable');
+            let tr = table.getElementsByTagName('tr');
+
+            for (let i = 1; i < tr.length; i++) {
+                let tdName = tr[i].getElementsByTagName('td')[0]; // Customer Name column
+                let tdCompany = tr[i].getElementsByTagName('td')[1]; // Company Name column
+
+                if (tdName || tdCompany) {
+                    let nameValue = tdName.textContent || tdName.innerText;
+                    let companyValue = tdCompany.textContent || tdCompany.innerText;
+
+                    if (nameValue.toUpperCase().indexOf(filter) > -1 || companyValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = '';
+                    } else {
+                        tr[i].style.display = 'none';
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Modal for editing customer -->
+    <div id="customerModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Edit Customer</h2>
+            <form id="editCustomerForm" action="/customers/edit" method="POST">
+                <input type="hidden" name="customerId" id="customerId">
+
+                <!-- Form Group for each field -->
+                <div class="form-group">
+                    <label>Customer Name:</label>
+                    <input type="text" name="customerName" id="customerName">
+                </div>
+
+                <div class="form-group">
+                    <label>Registered Company Name:</label>
+                    <input type="text" name="companyName" id="companyName">
+                </div>
+
+                <div class="form-group">
+                    <label>Trading As:</label>
+                    <input type="text" name="tradingAs" id="tradingAs">
+                </div>
+
+                <div class="form-group">
+                    <label>Physical Address:</label>
+                    <input type="text" name="physicalAddress" id="physicalAddress">
+                </div>
+
+                <div class="form-group">
+                    <label>Postal Address:</label>
+                    <input type="text" name="postalAddress" id="postalAddress">
+                </div>
+
+                <div class="form-group">
+                    <label>Telephone Number:</label>
+                    <input type="text" name="telephoneNumber" id="telephoneNumber">
+                </div>
+
+                <div class="form-group">
+                    <label>Fax Number:</label>
+                    <input type="text" name="faxNumber" id="faxNumber">
+                </div>
+
+                <div class="form-group">
+                    <label>Finance Contact:</label>
+                    <input type="text" name="financeContact" id="financeContact">
+                </div>
+
+                <div class="form-group">
+                    <label>Finance Email:</label>
+                    <input type="email" name="financeEmail" id="financeEmail">
+                </div>
+
+                <div class="form-group">
+                    <label>Buyer Name:</label>
+                    <input type="text" name="buyerName" id="buyerName">
+                </div>
+
+                <div class="form-group">
+                    <label>Buyer Email:</label>
+                    <input type="email" name="buyerEmail" id="buyerEmail">
+                </div>
+
+                <div class="form-group">
+                    <label>Company CC:</label>
+                    <input type="text" name="companyCC" id="companyCC">
+                </div>
+
+                <div class="form-group">
+                    <label>VAT Number:</label>
+                    <input type="text" name="vatNumber" id="vatNumber">
+                </div>
+
+                <div class="form-group">
+                    <label>Payment Method:</label>
+                    <input type="text" name="paymentMethod" id="paymentMethod">
+                </div>
+
+                <div class="form-group">
+                    <label>Bank Name:</label>
+                    <input type="text" name="bankName" id="bankName">
+                </div>
+
+                <div class="form-group">
+                    <label>Branch Name:</label>
+                    <input type="text" name="branchName" id="branchName">
+                </div>
+
+                <div class="form-group">
+                    <label>Branch Code:</label>
+                    <input type="text" name="branchCode" id="branchCode">
+                </div>
+
+                <div class="form-group">
+                    <label>Bank Account:</label>
+                    <input type="text" name="bankAccount" id="bankAccount">
+                </div>
+
+                <div class="form-group">
+                    <label>Internal Account:</label>
+                    <input type="text" name="internalAccount" id="internalAccount">
+                </div>
+
+                <div class="form-group">
+                    <label>Rep Name:</label>
+                    <input type="text" name="repName" id="repName">
+                </div>
+
+                <button type="submit" class="edit-btn">Save</button>
+            </form>
+        </div>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById('customerModal');
+    const closeBtn = document.querySelector('.close-btn');
+	const saveBtn = document.getElementById('saveAssociateCustomers');
+
+    // Re-initialize View Associate Customers and Upload buttons for dynamically loaded rows
+    function reinitializeButtons() {
+        document.querySelectorAll('.view-sub-customers').forEach(button => {
+            button.addEventListener('click', function () {
+                const customerId = this.getAttribute('data-id');
+
+                // Fetch associated customers and display in the modal
+                fetch(`/customers/${customerId}/sub-customers`)
+                    .then(response => response.json())
+                    .then(data => {
+                        displayAssociatedCustomers(data.subCustomers);
+                    })
+                    .catch(err => {
+                        console.error('Error fetching associated customers:', err);
+                    });
+            });
+        });
+
+        document.querySelectorAll('.upload-associated-stores-form').forEach(form => {
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                const formData = new FormData(this);
+
+                fetch(this.action, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Associated stores uploaded successfully!');
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(err => {
+                    console.error('Error uploading associated stores:', err);
+                });
+            });
+        });
+    }
+
+<script>
+// Function to display associated customers in the modal
+function displayAssociatedCustomers(customers) {
+    const modal = document.getElementById('customerModal');
+    const modalContent = modal.querySelector('.modal-content');
+
+    // Clear previous content
+    modalContent.innerHTML = '<span class="close-btn">&times;</span><h2>Edit Associated Customers</h2>';
+
+    // Loop through customers and create form elements
+    customers.forEach(customer => {
+        const formGroup = document.createElement('div');
+        formGroup.classList.add('form-group');
+
+        formGroup.innerHTML = `
+            <input type="hidden" name="customerId" value="${customer.id}">
+            <label for="customerName_${customer.id}">Customer Name:</label>
+            <input type="text" id="customerName_${customer.id}" name="customerName" value="${customer.name}">
+            <button class="delete-btn" data-id="${customer.id}">Delete</button>
+        `;
+
+        modalContent.appendChild(formGroup);
+    });
+
+    // Add Save button for saving changes
+    const saveButton = document.createElement('button');
+    saveButton.classList.add('edit-btn');
+    saveButton.textContent = 'Save Changes';
+    saveButton.addEventListener('click', saveCustomerChanges);  // Attach save event listener
+    modalContent.appendChild(saveButton);
+
+    // Add Add button for adding a new customer
+    const addButton = document.createElement('button');
+    addButton.classList.add('edit-btn');
+    addButton.textContent = 'Add New Customer';
+    addButton.addEventListener('click', addNewCustomerForm);  // Attach add event listener
+    modalContent.appendChild(addButton);
+
+    modal.style.display = 'flex';  // Display the modal
+
+    // Re-attach close functionality for modal
+    attachCloseModalListener();
+}
+
+</script>
+
+
+
+
+    <!-- JavaScript to handle modal and slider behavior -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const modal = document.getElementById('customerModal');
+            const closeBtn = document.querySelector('.close-btn');
+            const customerRows = document.querySelectorAll('.customer-row');
+            const editCustomerForm = document.getElementById('editCustomerForm');
+
+            // Event listener for row clicks to open modal with customer data
+            customerRows.forEach(row => {
+                row.addEventListener('click', function () {
+                    const customer = JSON.parse(this.getAttribute('data-customer'));
+
+                    // Populate modal fields with customer data
+                    editCustomerForm.customerId.value = customer.customerId;
+                    editCustomerForm.customerName.value = customer.customerName;
+                    editCustomerForm.companyName.value = customer.companyName;
+                    editCustomerForm.tradingAs.value = customer.tradingAs;
+                    editCustomerForm.physicalAddress.value = customer.physicalAddress;
+                    editCustomerForm.postalAddress.value = customer.postalAddress;
+                    editCustomerForm.telephoneNumber.value = customer.telephoneNumber;
+                    editCustomerForm.faxNumber.value = customer.faxNumber;
+                    editCustomerForm.financeContact.value = customer.financeContact;
+                    editCustomerForm.financeEmail.value = customer.financeEmail;
+                    editCustomerForm.buyerName.value = customer.buyerName;
+                    editCustomerForm.buyerEmail.value = customer.buyerEmail;
+                    editCustomerForm.companyCC.value = customer.companyCC;
+                    editCustomerForm.vatNumber.value = customer.vatNumber;
+                    editCustomerForm.paymentMethod.value = customer.paymentMethod;
+                    editCustomerForm.bankName.value = customer.bankName;
+                    editCustomerForm.branchName.value = customer.branchName;
+                    editCustomerForm.branchCode.value = customer.branchCode;
+                    editCustomerForm.bankAccount.value = customer.bankAccount;
+                    editCustomerForm.internalAccount.value = customer.internalAccount;
+                    editCustomerForm.repName.value = customer.repName;
+
+                    // Show the modal
+                    modal.style.display = 'flex';
+                });
+            });
+
+            // Close modal when close button is clicked
+            closeBtn.addEventListener('click', function () {
+                modal.style.display = 'none';
+            });
+
+            // Close modal when clicking outside of modal content
+            window.addEventListener('click', function (event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+
+            // Handle slider toggle for updating in the database and prevent modal opening
+            document.querySelectorAll('.slider input[type="checkbox"]').forEach(slider => {
+                // Prevent modal opening on slider toggle
+                slider.addEventListener('click', function (e) {
+                    e.stopPropagation(); // Prevents row click from triggering modal
+                });
+
+                // Handle slider state change and send update request to the backend
+                slider.addEventListener('change', function () {
+                    const customerId = this.getAttribute('data-id'); // Get the customer ID
+                    const field = this.classList.contains('target-slider') ? 'targetBased' :
+                                  this.classList.contains('tier-slider') ? 'tierBased' :
+                                  this.classList.contains('adhoc-slider') ? 'adhocBased' : 'groupYesNo';
+
+                    // If slider is checked, send 'Activated'; otherwise, send null (or any other fallback)
+                    const value = this.checked ? 'Activated' : null;
+
+                    // Send the updated value to the backend
+                    fetch(`/customers/update-slider`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ customerId, field, value })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Success: Do nothing (silent update)
+                        if (!data.success) {
+                            console.error('Error updating status.');
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Error updating slider:', err);
+                    });
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
+

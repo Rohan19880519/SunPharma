@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Portal</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        body {
+            font-family: 'Century Gothic', sans-serif;
+            background-color: #f0f4f8; /* Lighter, neutral background */
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navbar styles */
+        .navbar {
+            background-color: #7b8b9c; /* Navbar background color */
+            position: fixed; /* Fixes the navbar at the top */
+            top: 0; /* Positions it at the very top */
+            width: 98%; /* Full width */
+            z-index: 1000; /* Stacks it above other elements */
+            display: flex; /* Uses flexbox for layout */
+            justify-content: space-between; /* Spaces items evenly */
+            align-items: center; /* Vertically centers items */
+            padding: 10px 20px; /* Padding inside the navbar */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds shadow */
+        }
+
+        .navbar ul {
+            list-style-type: none; /* Removes bullet points */
+            margin: 0;
+            padding: 0;
+            display: flex; /* Displays list items horizontally */
+            gap: 5px; /* Space between menu items */
+        }
+
+        .navbar ul li {
+            position: relative; /* For positioning dropdowns */
+        }
+
+        .navbar ul li a {
+            display: block; /* Makes the link fill the list item */
+            padding: 8px 12px; /* Padding around the link */
+            color: #ecf0f1; /* Link text color */
+            text-decoration: none; /* Removes underline */
+            font-weight: normal; /* Normal font weight (not bold) */
+            transition: background-color 0.3s ease; /* Smooth hover effect */
+        }
+
+        .navbar ul li a:hover {
+            background-color: #e27618; /* Background on hover */
+            border-radius: 5px; /* Rounds the corners */
+        }
+
+        .navbar ul li a.active {
+            background-color: #7b8b9c; /* Active link background */
+            color: #ffffff; /* Active link text color */
+        }
+
+
+		/* Dropdown styles */
+		.dropdown {
+			display: none;
+			position: absolute;
+			background-color: #7b8b9c;
+			min-width: 160px;
+			box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+			z-index: 1;
+			top: 100%; /* Position the dropdown below the parent */
+			left: 0;   /* Align it to the left of the parent */
+			opacity: 0;
+			transition: opacity 0.3s ease;
+		}
+
+        /* Logo styles */
+        .navbar .logo img {
+            height: 40px;
+            width: auto;
+        }
+
+        /* Main content styles */
+        .content {
+            padding-top: 120px; /* Make sure the content is not hidden behind the fixed navbar */
+            text-align: center;
+            color: #7b8b9c; /* Darker text for contrast */
+        }
+
+        .content h1 {
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+
+        .content p {
+            font-size: 18px;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto; /* Center the paragraph text */
+        }
+
+        /* Logo section styling */
+        .logo-section {
+            margin-top: 60px;
+        }
+
+        .logo-section img {
+            height: 200px; /* Adjust the size of the logo */
+            width: auto;
+        }
+		
+		/* Dropdown will appear when hovered over the parent li or clicked */
+		.navbar ul li:hover .dropdown,
+		.navbar ul li:focus-within .dropdown {
+			display: block;
+			opacity: 1;
+		}
+
+		/* Hide dropdown when focus is lost */
+		.navbar ul li .dropdown {
+			pointer-events: none;  /* Prevent unwanted interactions while hidden */
+		}
+
+		.navbar ul li:hover .dropdown,
+		.navbar ul li:focus-within .dropdown {
+			pointer-events: auto;
+		}
+		
+				/* Dropdown link styles */
+		.dropdown a {
+			padding: 12px 16px;
+			text-decoration: none;
+			display: block;
+			color: #ffffff;
+			text-align: left;
+		}
+
+		.dropdown a:hover {
+			background-color: #e27618;
+		}
+        /* Show dropdown on hover */
+        .navbar ul li:hover .dropdown {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <a href="/home" class="logo">
+        <img src="/assets/logo.png" alt="Company Logo">
+    </a>
+    <ul>
+        <li><a href="/home">Home</a></li>
+        <li>
+            <a href="/customers">Customers</a>
+            <ul class="dropdown">
+                <li><a href="/customers/groups">Groups</a></li>
+                <li><a href="/customers/wholesalers">Wholesalers</a></li>
+            </ul>
+        </li>
+        <li><a href="/sales">Sales</a></li>
+        <li>
+            <a href="/financials">Financials</a>
+            <ul class="dropdown">
+                <li><a href="/financials/tiers">Tiers</a></li>
+                <li><a href="/financials/adhoc">Ad-Hoc</a></li>
+                <li><a href="/financials/targets">Targets</a></li>
+                <li><a href="/financials/tax-invoices">Tax Invoices</a></li>
+                <li><a href="/financials/company-details">Company Details</a></li> <!-- New Company Details link -->
+            </ul>
+        </li>
+        <li><a href="/logout">Logout</a></li>
+    </ul>
+</nav>
+
+
+    <!-- Main content of the home page -->
+    <div class="content">
+        <h1>Welcome to the Portal</h1>
+        <p>Navigate through the options in the navigation bar to manage your data.</p>
+
+        <!-- Logo section -->
+        <div class="logo-section">
+            <img src="/assets/logo.png" alt="Company Logo">
+        </div>
+    </div>
+</body>
+</html>

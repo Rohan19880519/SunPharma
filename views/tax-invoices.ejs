@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tax Invoices</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        body {
+            font-family: 'Century Gothic', sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Adjust Logo */
+        .navbar .logo img {
+            height: 50px;
+            width: auto;
+            margin-right: 10px;
+        }
+
+        /* Navbar styles */
+        .navbar {
+            background-color: #7b8b9c;
+            position: fixed;
+            top: 0;
+            width: 98%;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 5px;
+        }
+
+        .navbar ul li {
+            position: relative;
+        }
+
+        .navbar ul li a {
+            display: block;
+            padding: 8px 12px;
+            color: #ecf0f1;
+            text-decoration: none;
+            font-weight: normal;
+            transition: background-color 0.3s ease;
+        }
+
+        .navbar ul li a:hover {
+            background-color: #e27618;
+            border-radius: 5px;
+        }
+
+        .navbar ul li a.active {
+            background-color: #7b8b9c;
+            color: #ffffff;
+        }
+
+        /* Dropdown menu styles */
+        .dropdown {
+            display: none;
+            position: absolute;
+            background-color: #7b8b9c;
+            min-width: 160px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+            top: 100%;
+            left: 0;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .navbar ul li:hover .dropdown,
+        .navbar ul li:focus-within .dropdown {
+            display: block;
+            opacity: 1;
+        }
+
+        .dropdown a {
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            color: #ffffff;
+            text-align: left;
+        }
+
+        .dropdown a:hover {
+            background-color: #e27618;
+        }
+
+        /* Main content styles */
+        .content {
+            padding-top: 150px;
+            color: #7b8b9c;
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #7b8b9c;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+
+        /* Form styles */
+        form {
+            margin-bottom: 30px;
+        }
+
+        form label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        form select, form input {
+            padding: 8px;
+            width: 300px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        form button {
+            padding: 10px 20px;
+            background-color: #7b8b9c;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        form button:hover {
+            background-color: #e27618;
+        }
+
+        /* Table styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            border: 1px solid #dfe6e9;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #7b8b9c;
+            color: #ffffff;
+        }
+
+        td {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Loading spinner styles */
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #7b8b9c;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: auto;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <a href="/home" class="logo">
+        <img src="/assets/logo.png" alt="Company Logo">
+    </a>
+    <ul>
+        <li><a href="/home">Home</a></li>
+        <li>
+            <a href="/customers">Customers</a>
+            <ul class="dropdown">
+                <li><a href="/customers/groups">Groups</a></li>
+                <li><a href="/customers/wholesalers">Wholesalers</a></li>
+            </ul>
+        </li>
+        <li><a href="/sales">Sales</a></li>
+        <li>
+            <a href="/financials">Financials</a>
+            <ul class="dropdown">
+                <li><a href="/financials/tiers">Tiers</a></li>
+                <li><a href="/financials/adhoc">Ad-Hoc</a></li>
+                <li><a href="/financials/targets">Targets</a></li>
+                <li><a href="/financials/tax-invoices">Tax Invoices</a></li>
+                <li><a href="/financials/company-details">Company Details</a></li>
+            </ul>
+        </li>
+        <li><a href="/logout">Logout</a></li>
+    </ul>
+</nav>
+
+<div id="message" class="message">Action completed successfully!</div>
+<div id="errorMessage" class="error-message">An error occurred.</div>
+
+<!-- Main Content -->
+<br>
+<div class="content">
+    <h1>Tax Invoices</h1>
+
+    <!-- Form for generating tax invoice -->
+    <form action="/financials/tax-invoices/generate-invoice" method="POST">
+        <label for="customerId">Customer:</label>
+        <select name="customerId" id="customerId">
+            <!-- Populate customer list from backend -->
+        </select>
+
+        <label for="startDate">Start Date:</label>
+        <input type="date" name="startDate" required>
+
+        <label for="endDate">End Date:</label>
+        <input type="date" name="endDate" required>
+
+        <button type="submit">Generate Invoice</button>
+    </form>
+
+    <!-- Invoices Table -->
+    <table id="invoicesTable">
+        <thead>
+            <tr>
+                <th>Invoice Number</th>
+                <th>Customer Name</th>
+                <th>Invoice Date</th>
+                <th>Total Amount</th>
+                <th>Rep Name</th>
+                <th>Download PDF</th>
+            </tr>
+        </thead>
+        <tbody id="invoicesTableBody">
+        </tbody>
+    </table>
+
+    <!-- Loading Spinner -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Loading more data...</p>
+    </div>
+</div>
+
+<script>
+    let currentPage = 1;
+    const pageSize = 10;
+    let loading = false;
+    let reachedEnd = false;
+    let allInvoices = [];
+
+    // Fetch and load more invoices with pagination
+    async function loadMoreInvoices() {
+        if (loading || reachedEnd) return;
+        loading = true;
+        document.getElementById('loading').style.display = 'block';
+
+        try {
+            const response = await fetch(`/financials/tax-invoices/list?page=${currentPage}&size=${pageSize}`);
+            const result = await response.json();
+
+            console.log(result);  // Log result to see if data is coming through
+
+            if (result.success) {
+                const invoices = result.data;
+                allInvoices = [...allInvoices, ...invoices];
+                appendInvoicesToTable(invoices);
+
+                if (invoices.length < pageSize) {
+                    reachedEnd = true;
+                    document.getElementById('loading').style.display = 'none';
+                }
+
+                currentPage++;
+                loading = false;
+                document.getElementById('loading').style.display = 'none';
+            } else {
+                console.error('Failed to fetch invoices:', result.message);
+                document.getElementById('loading').style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Error fetching invoices:', error);
+            document.getElementById('loading').style.display = 'none';
+        }
+    }
+
+    // Append invoices to the table
+    function appendInvoicesToTable(invoices) {
+        const tableBody = document.getElementById('invoicesTableBody');
+        const rowsFragment = document.createDocumentFragment();
+
+        invoices.forEach(invoice => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${invoice.InvoiceNumber}</td>
+                <td>${invoice.CustomerName}</td>
+                <td>${invoice.InvoiceDate}</td>
+                <td>${invoice.TotalAmount}</td>
+                <td>${invoice.RepName}</td>
+                <td><a href="/download-invoice/${invoice.InvoiceId}">Download PDF</a></td>
+            `;
+            rowsFragment.appendChild(row);
+        });
+
+        tableBody.appendChild(rowsFragment);
+    }
+
+    // Initial load
+    loadMoreInvoices();
+</script>

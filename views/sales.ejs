@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales - Portal</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        body {
+            font-family: 'Century Gothic', sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navbar styles */
+        .navbar {
+            background-color: #7b8b9c; /* Navbar background color */
+            position: fixed; /* Fixes the navbar at the top */
+            top: 0; /* Positions it at the very top */
+            width: 98%; /* Full width */
+            z-index: 1000; /* Stacks it above other elements */
+            display: flex; /* Uses flexbox for layout */
+            justify-content: space-between; /* Spaces items evenly */
+            align-items: center; /* Vertically centers items */
+            padding: 10px 20px; /* Padding inside the navbar */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds shadow */
+        }
+
+        .navbar ul {
+            list-style-type: none; /* Removes bullet points */
+            margin: 0;
+            padding: 0;
+            display: flex; /* Displays list items horizontally */
+            gap: 5px; /* Space between menu items */
+        }
+
+        .navbar ul li {
+            position: relative; /* For positioning dropdowns */
+        }
+
+        .navbar ul li a {
+            display: block; /* Makes the link fill the list item */
+            padding: 8px 12px; /* Padding around the link */
+            color: #ecf0f1; /* Link text color */
+            text-decoration: none; /* Removes underline */
+            font-weight: normal; /* Normal font weight (not bold) */
+            transition: background-color 0.3s ease; /* Smooth hover effect */
+        }
+
+        .navbar ul li a:hover {
+            background-color: #e27618; /* Background on hover */
+            border-radius: 5px; /* Rounds the corners */
+        }
+
+        .navbar ul li a.active {
+            background-color: #7b8b9c; /* Active link background */
+            color: #ffffff; /* Active link text color */
+        }
+
+
+        /* Dropdown styles */
+        .dropdown {
+            display: none;
+            position: absolute;
+            background-color: #7b8b9c;
+            min-width: 160px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+            top: 100%; /* Position the dropdown below the parent */
+            left: 0;   /* Align it to the left of the parent */
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Dropdown will appear when hovered over the parent li or clicked */
+        .navbar ul li:hover .dropdown,
+        .navbar ul li:focus-within .dropdown {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Dropdown link styles */
+        .dropdown a {
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            color: #ffffff;
+            text-align: left;
+        }
+
+        .dropdown a:hover {
+            background-color: #e27618;
+        }
+
+        /* Logo styles */
+        .navbar .logo img {
+            height: 40px;
+            width: auto;
+        }
+
+        /* Main content styles */
+        .content {
+            padding-top: 150px;
+            color: #7b8b9c;
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #7b8b9c;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+
+        /* Search bar styles */
+        .search-container {
+            margin-top: 40px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .search-container input[type="text"] {
+            width: 40%;
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+        }
+
+        /* Table styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        table, th, td {
+            border: 1px solid #dfe6e9;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #7b8b9c;
+            color: #ffffff;
+        }
+
+        td {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Loading spinner styles */
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #7b8b9c;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: auto;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+		
+		        /* Upload form styles */
+        .upload-form {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .upload-form input[type="file"], .upload-form button {
+            padding: 10px;
+            background-color: #7ed957;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .upload-form button {
+            margin-left: 10px;
+        }
+
+        .upload-form input[type="file"] {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <a href="/home" class="logo">
+        <img src="/assets/logo.png" alt="Company Logo">
+    </a>
+    <ul>
+        <li><a href="/home">Home</a></li>
+        <li>
+            <a href="/customers">Customers</a>
+            <ul class="dropdown">
+                <li><a href="/customers/groups">Groups</a></li>
+                <li><a href="/customers/wholesalers">Wholesalers</a></li>
+            </ul>
+        </li>
+        <li><a href="/sales">Sales</a></li>
+        <li>
+            <a href="/financials">Financials</a>
+            <ul class="dropdown">
+                <li><a href="/financials/tiers">Tiers</a></li>
+                <li><a href="/financials/adhoc">Ad-Hoc</a></li>
+                <li><a href="/financials/targets">Targets</a></li>
+                <li><a href="/financials/tax-invoices">Tax Invoices</a></li>
+                <li><a href="/financials/company-details">Company Details</a></li> <!-- New Company Details link -->
+            </ul>
+        </li>
+        <li><a href="/logout">Logout</a></li>
+    </ul>
+</nav>
+
+
+    <!-- Main content of the Sales page -->
+    <div class="content">
+	<div class="content">
+
+
+        <!-- Search Bar -->
+        <div class="search-container">
+            <input type="text" id="searchInput" oninput="debouncedSearch()" placeholder="Search sales data...">
+        </div>
+
+        <!-- File Upload Form -->
+        <div class="upload-form">
+            <form action="/sales/upload-sales" method="POST" enctype="multipart/form-data">
+                <input type="file" name="fileUpload" accept=".xlsx, .xls" required>
+                <button type="submit">Upload Sales Data</button>
+		</div>
+            </form>
+        </div>
+
+        <!-- Sales Table -->
+        <table id="salesTable">
+            <thead>
+                <tr>
+                    <th>Transaction Number</th>
+                    <th>Delivered Qty</th>
+                    <th>SEP</th>
+                    <th>Transaction Date</th>
+                    <th>Transaction Type</th>
+                    <th>Invoice Number</th>
+                    <th>Customer Name</th>
+                    <th>Product</th>
+                    <th>SSD/SRA</th>
+                    <th>Supplier</th>
+                    <th>Line Total</th>
+                </tr>
+            </thead>
+            <tbody id="salesTableBody">
+            </tbody>
+        </table>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Loading more data...</p>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        const pageSize = 20;
+        let loading = false;
+        let reachedEnd = false;
+        let searchTimeout;
+        let cache = [];
+
+        function debounce(fn, delay) {
+            let timeoutId;
+            return function() {
+                if (timeoutId) clearTimeout(timeoutId);
+                timeoutId = setTimeout(fn, delay);
+            };
+        }
+
+        async function loadMoreSales() {
+            if (loading || reachedEnd) return;
+            loading = true;
+            document.getElementById('loading').style.display = 'block';
+
+            const response = await fetch(`/sales/load-more?page=${currentPage}`);
+            const result = await response.json();
+
+            if (result.salesData.length < pageSize) {
+                reachedEnd = true;
+            }
+
+            cache = cache.concat(result.salesData);
+            appendSalesToTable(result.salesData);
+
+            currentPage++;
+            loading = false;
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function appendSalesToTable(salesData) {
+            const tableBody = document.getElementById('salesTableBody');
+            const rowsFragment = document.createDocumentFragment();
+            salesData.forEach(sale => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${sale.Transaction_Number}</td>
+                    <td>${sale.Delivered_Qty}</td>
+                    <td>${sale.SEP}</td>
+                    <td>${sale.Transaction_Date}</td>
+                    <td>${sale.Transaction_Type}</td>
+                    <td>${sale.Invoice_Number}</td>
+                    <td>${sale.Customer_Name}</td>
+                    <td>${sale.Product}</td>
+                    <td>${sale.SSD_SRA}</td>
+                    <td>${sale.Supplier}</td>
+                    <td>${sale.Line_Total}</td>
+                `;
+                rowsFragment.appendChild(row);
+            });
+            tableBody.appendChild(rowsFragment);
+        }
+
+        window.addEventListener('scroll', debounce(function() {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) {
+                loadMoreSales();
+            }
+        }, 200));
+
+        loadMoreSales();
+
+        async function debouncedSearch() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(searchTable, 300);
+        }
+
+        async function searchTable() {
+            const input = document.getElementById('searchInput').value.trim();
+
+            if (input === "") {
+                currentPage = 1;
+                document.getElementById('salesTableBody').innerHTML = "";
+                cache = [];
+                loadMoreSales();
+                return;
+            }
+
+            const filteredCache = cache.filter(sale => {
+                return Object.values(sale).some(value => value.toString().toLowerCase().includes(input.toLowerCase()));
+            });
+
+            if (filteredCache.length > 0) {
+                displaySearchResults(filteredCache);
+            } else {
+                const response = await fetch(`/sales/search?query=${encodeURIComponent(input)}`);
+                const result = await response.json();
+                displaySearchResults(result.salesData);
+            }
+        }
+
+        function displaySearchResults(salesData) {
+            const tableBody = document.getElementById('salesTableBody');
+            tableBody.innerHTML = '';
+            const rowsFragment = document.createDocumentFragment();
+            salesData.forEach(sale => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${sale.Transaction_Number}</td>
+                    <td>${sale.Delivered_Qty}</td>
+                    <td>${sale.SEP}</td>
+                    <td>${sale.Transaction_Date}</td>
+                    <td>${sale.Transaction_Type}</td>
+                    <td>${sale.Invoice_Number}</td>
+                    <td>${sale.Customer_Name}</td>
+                    <td>${sale.Product}</td>
+                    <td>${sale.SSD_SRA}</td>
+                    <td>${sale.Supplier}</td>
+                    <td>${sale.Line_Total}</td>
+                `;
+                rowsFragment.appendChild(row);
+            });
+            tableBody.appendChild(rowsFragment);
+        }
+    </script>
+
+</body>
+</html>

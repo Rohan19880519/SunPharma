@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"> <!-- Sets the character encoding to UTF-8 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Ensures proper rendering on mobile devices -->
+    <title>Customer Groups</title> <!-- The title displayed in the browser tab -->
+    <link rel="stylesheet" href="/css/styles.css"> <!-- Links to external CSS stylesheet -->
+    <style>
+        /* Global styles for the body */
+        body {
+            font-family: 'Century Gothic', sans-serif; /* Sets the font family */
+            background-color: #f0f4f8; /* Light background color */
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Adjust Logo */
+        .navbar .logo img {
+            height: 50px; /* Sets the logo height */
+            width: auto; /* Keeps the aspect ratio */
+            margin-right: 10px; /* Space to the right of the logo */
+        }
+
+        /* Navbar styles */
+        .navbar {
+            background-color: #7b8b9c; /* Navbar background color */
+            position: fixed; /* Fixes the navbar at the top */
+            top: 0; /* Positions it at the very top */
+            width: 98%; /* Full width */
+            z-index: 1000; /* Stacks it above other elements */
+            display: flex; /* Uses flexbox for layout */
+            justify-content: space-between; /* Spaces items evenly */
+            align-items: center; /* Vertically centers items */
+            padding: 10px 20px; /* Padding inside the navbar */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds shadow */
+        }
+
+        .navbar ul {
+            list-style-type: none; /* Removes bullet points */
+            margin: 0;
+            padding: 0;
+            display: flex; /* Displays list items horizontally */
+            gap: 5px; /* Space between menu items */
+        }
+
+        .navbar ul li {
+            position: relative; /* For positioning dropdowns */
+        }
+
+        .navbar ul li a {
+            display: block; /* Makes the link fill the list item */
+            padding: 8px 12px; /* Padding around the link */
+            color: #ecf0f1; /* Link text color */
+            text-decoration: none; /* Removes underline */
+            font-weight: normal; /* Normal font weight (not bold) */
+            transition: background-color 0.3s ease; /* Smooth hover effect */
+        }
+
+        .navbar ul li a:hover {
+            background-color: #e27618; /* Background on hover */
+            border-radius: 5px; /* Rounds the corners */
+        }
+
+        .navbar ul li a.active {
+            background-color: #7b8b9c; /* Active link background */
+            color: #ffffff; /* Active link text color */
+        }
+
+        /* Dropdown menu styles */
+        .dropdown {
+            display: none; /* Hidden by default */
+            position: absolute; /* Positioned relative to parent */
+            background-color: #7b8b9c; /* Background color */
+            min-width: 160px; /* Minimum width */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* Adds shadow */
+            z-index: 1; /* Stacks above other elements */
+            top: 100%; /* Positions below the parent */
+            left: 0; /* Aligns to the left */
+            opacity: 0; /* Transparent */
+            transition: opacity 0.3s ease; /* Fade-in effect */
+        }
+
+        /* Shows the dropdown on hover or focus */
+        .navbar ul li:hover .dropdown,
+        .navbar ul li:focus-within .dropdown {
+            display: block; /* Makes it visible */
+            opacity: 1; /* Fully opaque */
+        }
+
+        .dropdown a {
+            padding: 12px 16px; /* Padding inside dropdown links */
+            text-decoration: none; /* Removes underline */
+            display: block; /* Fills the container */
+            color: #ffffff; /* Text color */
+            text-align: left; /* Left-aligns text */
+        }
+
+        .dropdown a:hover {
+            background-color: #e27618; /* Background on hover */
+        }
+
+        /* Content styles */
+        .content {
+            padding-top: 170px; /* Offsets content below the fixed navbar */
+            color: #7b8b9c; /* Text color */
+            padding: 60px; /* Padding around content */
+            text-align: center; /* Centers the content */
+        }
+
+        h1 {
+            color: #7b8b9c; /* Heading color */
+            margin-bottom: 20px; /* Space below the heading */
+            font-size: 2.5rem; /* Heading font size */
+        }
+
+        /* Table styles */
+        table {
+            width: 90%; /* Table width */
+            margin: 0 auto; /* Centers the table */
+            border-collapse: collapse; /* Collapses borders */
+            background-color: #ffffff; /* Table background */
+            margin-bottom: 20px; /* Space below the table */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adds shadow */
+        }
+
+        th, td {
+            border: 1px solid #dfe6e9; /* Cell borders */
+            padding: 10px; /* Padding inside cells */
+            text-align: left; /* Left-aligns text */
+        }
+
+        th {
+            background-color: #7b8b9c; /* Header background */
+            color: #ffffff; /* Header text color */
+        }
+
+        td {
+            overflow: hidden; /* Hides overflow */
+            text-overflow: ellipsis; /* Adds ellipsis for long text */
+            white-space: nowrap; /* Prevents text wrapping */
+        }
+
+        /* Button styles */
+        .edit-btn, .delete-btn {
+            cursor: pointer; /* Pointer cursor on hover */
+            padding: 5px 10px; /* Button padding */
+            color: white; /* Button text color */
+            background-color: #7b8b9c; /* Button background */
+            border: none; /* Removes default border */
+            border-radius: 5px; /* Rounds the corners */
+        }
+
+        .edit-btn:hover, .delete-btn:hover {
+            background-color: #e27618; /* Background on hover */
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Fixed position */
+            z-index: 1001; /* Above other elements */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Scroll if needed */
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+            justify-content: center; /* Centers content horizontally */
+            align-items: center; /* Centers content vertically */
+        }
+
+        .modal-content {
+            background-color: #fff; /* Modal background */
+            padding: 20px; /* Padding inside modal */
+            border: 1px solid #56c275; /* Border around modal */
+            width: 60%; /* Modal width */
+            border-radius: 10px; /* Rounds the corners */
+            text-align: left; /* Left-aligns text */
+            max-height: 80vh; /* Max height */
+            overflow-y: auto; /* Scroll if content overflows */
+        }
+
+        .modal-content form {
+            display: flex; /* Flex layout */
+            flex-wrap: wrap; /* Wraps items */
+            gap: 10px; /* Space between items */
+        }
+
+        .modal-content button {
+            padding: 10px 20px; /* Button padding */
+            background-color: #7b8b9c; /* Button background */
+            color: white; /* Text color */
+            border: none; /* Removes border */
+            border-radius: 5px; /* Rounds the corners */
+            cursor: pointer; /* Pointer cursor */
+            width: 100%; /* Full width button */
+            margin-top: 20px; /* Space above button */
+        }
+
+        .modal-content button:hover {
+            background-color: #7b8b9c; /* Keeps background color on hover */
+        }
+
+        .close-btn {
+            color: #aaa; /* Close button color */
+            float: right; /* Positions it to the right */
+            font-size: 28px; /* Font size */
+            font-weight: bold; /* Bold text */
+        }
+
+        .close-btn:hover {
+            color: #000; /* Changes color on hover */
+            cursor: pointer; /* Pointer cursor */
+        }
+
+        /* Success and Error messages */
+        .message {
+            display: none; /* Hidden by default */
+            padding: 10px; /* Padding inside message */
+            margin-bottom: 20px; /* Space below message */
+            background-color: #4caf50; /* Green background */
+            color: white; /* Text color */
+            border-radius: 5px; /* Rounds the corners */
+        }
+
+        .error-message {
+            display: none; /* Hidden by default */
+            padding: 10px; /* Padding inside message */
+            margin-bottom: 20px; /* Space below message */
+            background-color: #f44336; /* Red background */
+            color: white; /* Text color */
+            border-radius: 5px; /* Rounds the corners */
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <a href="/home" class="logo">
+        <img src="/assets/logo.png" alt="Company Logo">
+    </a>
+    <ul>
+        <li><a href="/home">Home</a></li>
+        <li>
+            <a href="/customers">Customers</a>
+            <ul class="dropdown">
+                <li><a href="/customers/groups">Groups</a></li>
+                <li><a href="/customers/wholesalers">Wholesalers</a></li>
+            </ul>
+        </li>
+        <li><a href="/sales">Sales</a></li>
+        <li>
+            <a href="/financials">Financials</a>
+            <ul class="dropdown">
+                <li><a href="/financials/tiers">Tiers</a></li>
+                <li><a href="/financials/adhoc">Ad-Hoc</a></li>
+                <li><a href="/financials/targets">Targets</a></li>
+                <li><a href="/financials/tax-invoices">Tax Invoices</a></li>
+                <li><a href="/financials/company-details">Company Details</a></li> <!-- New Company Details link -->
+            </ul>
+        </li>
+        <li><a href="/logout">Logout</a></li>
+    </ul>
+</nav>
+
+
+    <!-- Main Content -->
+    <div class="content">
+        <h1>Customer Groups</h1>
+        <div id="message" class="message">Sub-customer updated successfully!</div>
+        <div id="errorMessage" class="error-message"></div>
+
+        <!-- Table with Customer Groups -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Parent Pharmacy</th>
+                    <th>Sub Pharmacy</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% customerGroups.forEach(group => { %>
+                    <tr id="row-<%= group.subCustomerId.replace(/\s/g, '-') %>">
+                        <td><%= group.ParentCustomerName %></td>
+                        <td id="subCustomerName-<%= group.subCustomerId.replace(/\s/g, '-') %>"><%= group.subCustomerId %></td>
+                        <td>
+                            <button class="edit-btn" onclick="openModal('<%= group.subCustomerId %>', '<%= group.parentCustomerId %>')">Edit</button>
+                            <button class="delete-btn" onclick="deleteCustomer('<%= group.parentCustomerId %>', '<%= group.subCustomerId %>')">Delete</button>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal for editing sub-customer -->
+    <div class="modal" id="editCustomerModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2>Edit Sub-Customer</h2>
+            <form id="editCustomerForm">
+                <input type="hidden" name="parentCustomerId" id="parentCustomerId">
+                <input type="hidden" name="subCustomerIdOld" id="subCustomerIdOld">
+
+                <div class="form-group">
+                    <label for="subCustomerIdNew">Sub-Customer Name:</label>
+                    <input type="text" name="subCustomerIdNew" id="subCustomerIdNew" required>
+                </div>
+
+                <button type="submit">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Place this script block before closing the body tag -->
+    <script>
+        async function deleteCustomer(parentCustomerId, subCustomerId) {
+            try {
+                const response = await fetch('/customers/groups/delete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        parentCustomerId,
+                        subCustomerId
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    document.getElementById('message').textContent = 'Sub-customer deleted successfully!';
+                    document.getElementById('message').style.display = 'block';
+                    document.getElementById('row-' + subCustomerId.replace(/\s/g, '-')).remove();  // Remove the row from the table
+                    setTimeout(() => document.getElementById('message').style.display = 'none', 3000);
+                } else {
+                    document.getElementById('errorMessage').textContent = result.message;
+                    document.getElementById('errorMessage').style.display = 'block';
+                    setTimeout(() => document.getElementById('errorMessage').style.display = 'none', 3000);
+                }
+            } catch (error) {
+                document.getElementById('errorMessage').textContent = 'Error deleting sub-customer.';
+                document.getElementById('errorMessage').style.display = 'block';
+                setTimeout(() => document.getElementById('errorMessage').style.display = 'none', 3000);
+            }
+        }
+
+        function openModal(subCustomerId, parentCustomerId) {
+            document.getElementById('subCustomerIdOld').value = subCustomerId;
+            document.getElementById('subCustomerIdNew').value = subCustomerId;
+            document.getElementById('parentCustomerId').value = parentCustomerId;
+
+            document.getElementById('editCustomerModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('editCustomerModal').style.display = 'none';
+        }
+
+        document.getElementById('editCustomerForm').addEventListener('submit', async function(event) {
+            event.preventDefault();  // Prevent form from submitting the traditional way
+
+            const parentCustomerId = document.getElementById('parentCustomerId').value;
+            const subCustomerIdOld = document.getElementById('subCustomerIdOld').value;
+            const subCustomerIdNew = document.getElementById('subCustomerIdNew').value;
+
+            try {
+                const response = await fetch('/customers/groups/edit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        parentCustomerId,
+                        subCustomerIdOld,
+                        subCustomerIdNew
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    document.getElementById('message').style.display = 'block';
+                    document.getElementById('subCustomerName-' + subCustomerIdOld.replace(/\s/g, '-')).textContent = subCustomerIdNew;
+                    closeModal();
+                    setTimeout(() => document.getElementById('message').style.display = 'none', 3000);
+                } else {
+                    document.getElementById('errorMessage').textContent = result.message;
+                    document.getElementById('errorMessage').style.display = 'block';
+                    setTimeout(() => document.getElementById('errorMessage').style.display = 'none', 3000);
+                }
+            } catch (error) {
+                document.getElementById('errorMessage').textContent = 'Error updating sub-customer.';
+                document.getElementById('errorMessage').style.display = 'block';
+                setTimeout(() => document.getElementById('errorMessage').style.display = 'none', 3000);
+            }
+        });
+    </script>
+</body>
+</html>

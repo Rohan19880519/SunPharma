@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Details</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        body {
+            font-family: 'Century Gothic', sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navbar styles */
+        .navbar .logo img {
+            height: 50px;
+            width: auto;
+            margin-right: 10px;
+        }
+
+        .navbar {
+            background-color: #7b8b9c;
+            position: fixed;
+            top: 0;
+            width: 98%;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 15px;
+        }
+
+        .navbar ul li {
+            position: relative; /* Needed for dropdown positioning */
+        }
+
+        .navbar ul li a {
+            padding: 8px 12px;
+            color: #ecf0f1;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .navbar ul li a:hover {
+            background-color: #e27618;
+            border-radius: 5px;
+        }
+
+        .navbar ul li a.active {
+            background-color: #7b8b9c;
+            color: #ffffff;
+        }
+
+        /* Dropdown menu styles */
+        .dropdown {
+            display: none;
+            position: absolute;
+            background-color: #7b8b9c;
+            min-width: 160px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+            top: 100%;
+            left: 0;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .dropdown a {
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            color: #ffffff;
+            text-align: left;
+        }
+
+        .dropdown a:hover {
+            background-color: #e27618;
+        }
+
+        /* Show dropdown when hovering over the parent list item */
+        .navbar ul li:hover .dropdown,
+        .navbar ul li:focus-within .dropdown {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Main content styles */
+        .content {
+            padding-top: 150px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #7b8b9c;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+
+        /* Form container styles */
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            color: #7b8b9c;
+            display: block;
+        }
+
+        .form-group input {
+            padding: 10px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #7ed957;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #66c945;
+        }
+
+        .message {
+            display: none;
+            padding: 10px;
+            background-color: #4caf50;
+            color: white;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+
+        .error-message {
+            display: none;
+            padding: 10px;
+            background-color: #f44336;
+            color: white;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <a href="/home" class="logo">
+        <img src="/assets/logo.png" alt="Company Logo">
+    </a>
+    <ul>
+        <li><a href="/home">Home</a></li>
+        <li>
+            <a href="/customers">Customers</a>
+            <ul class="dropdown">
+                <li><a href="/customers/groups">Groups</a></li>
+                <li><a href="/customers/wholesalers">Wholesalers</a></li>
+            </ul>
+        </li>
+        <li><a href="/sales">Sales</a></li>
+        <li>
+            <a href="/financials">Financials</a>
+            <ul class="dropdown">
+                <li><a href="/financials/tiers">Tiers</a></li>
+                <li><a href="/financials/adhoc">Ad-Hoc</a></li>
+                <li><a href="/financials/targets">Targets</a></li>
+                <li><a href="/financials/tax-invoices">Tax Invoices</a></li>
+                <li><a href="/financials/company-details">Company Details</a></li>
+            </ul>
+        </li>
+        <li><a href="/logout">Logout</a></li>
+    </ul>
+</nav>
+
+<!-- Main Content -->
+<div class="content">
+<br>
+    <h1>Company Details</h1>
+
+    <div class="form-container">
+	<br>
+        <form id="companyDetailsForm">
+            <div class="form-group">
+                <label for="registeredCompanyName">Registered Company Name</label>
+                <input type="text" id="registeredCompanyName" name="registered_company_name" required>
+            </div>
+            <div class="form-group">
+                <label for="tradingAs">Trading As</label>
+                <input type="text" id="tradingAs" name="trading_as" required>
+            </div>
+            <div class="form-group">
+                <label for="physicalAddress">Physical Address</label>
+                <input type="text" id="physicalAddress" name="physical_address" required>
+            </div>
+            <div class="form-group">
+                <label for="telephoneNumber">Telephone Number</label>
+                <input type="text" id="telephoneNumber" name="telephone_number" required>
+            </div>
+            <div class="form-group">
+                <label for="financeContactPerson">Finance Contact Person</label>
+                <input type="text" id="financeContactPerson" name="finance_contact_person" required>
+            </div>
+            <div class="form-group">
+                <label for="financeEmailAddress">Finance Email Address</label>
+                <input type="email" id="financeEmailAddress" name="finance_email_address" required>
+            </div>
+            <div class="form-group">
+                <label for="vatNumber">VAT Number</label>
+                <input type="text" id="vatNumber" name="vat_number" required>
+            </div>
+            <button type="submit">Save Company Details</button>
+        </form>
+
+        <div id="message" class="message">Company details updated successfully!</div>
+        <div id="errorMessage" class="error-message">An error occurred while updating the details.</div>
+    </div>
+</div>
+
+<script>
+    // Fetch and populate the company details on page load
+    async function fetchCompanyDetails() {
+        try {
+            const response = await fetch('/api/company-details');
+            const result = await response.json();
+
+            if (result.success) {
+                document.getElementById('registeredCompanyName').value = result.data.registered_company_name;
+                document.getElementById('tradingAs').value = result.data.trading_as;
+                document.getElementById('physicalAddress').value = result.data.physical_address;
+                document.getElementById('telephoneNumber').value = result.data.telephone_number;
+                document.getElementById('financeContactPerson').value = result.data.finance_contact_person;
+                document.getElementById('financeEmailAddress').value = result.data.finance_email_address;
+                document.getElementById('vatNumber').value = result.data.vat_number;
+            } else {
+                console.error('Failed to fetch company details:', result.message);
+            }
+        } catch (error) {
+            console.error('Error fetching company details:', error);
+        }
+    }
+
+    // Call this when the page loads
+    fetchCompanyDetails();
+
+    // Handle form submission and update company details
+    document.getElementById('companyDetailsForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        const companyDetails = {
+            registered_company_name: document.getElementById('registeredCompanyName').value,
+            trading_as: document.getElementById('tradingAs').value,
+            physical_address: document.getElementById('physicalAddress').value,
+            telephone_number: document.getElementById('telephoneNumber').value,
+            finance_contact_person: document.getElementById('financeContactPerson').value,
+            finance_email_address: document.getElementById('financeEmailAddress').value,
+            vat_number: document.getElementById('vatNumber').value
+        };
+
+        try {
+            const response = await fetch('/financials/company-details/edit', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(companyDetails),
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                showMessage('Company details updated successfully!');
+            } else {
+                showErrorMessage('An error occurred while updating the details.');
+            }
+        } catch (error) {
+            showErrorMessage('An error occurred while updating the details.');
+            console.error('Error updating company details:', error);
+        }
+    });
+
+    function showMessage(message) {
+        const messageElement = document.getElementById('message');
+        messageElement.textContent = message;
+        messageElement.style.display = 'block';
+        setTimeout(() => {
+            messageElement.style.display = 'none';
+        }, 3000);
+    }
+
+    function showErrorMessage(message) {
+        const messageElement = document.getElementById('errorMessage');
+        messageElement.textContent = message;
+        messageElement.style.display = 'block';
+        setTimeout(() => {
+            messageElement.style.display = 'none';
+        }, 3000);
+    }
+</script>
+
+</body>
+</html>

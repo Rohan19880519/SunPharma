@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Wholesalers</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        /* Global styles for the body */
+        body {
+            font-family: 'Century Gothic', sans-serif; /* Sets the font family */
+            background-color: #f0f4f8; /* Light background color */
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Adjust Logo */
+        .navbar .logo img {
+            height: 50px; /* Sets the logo height */
+            width: auto; /* Keeps the aspect ratio */
+            margin-right: 10px; /* Space to the right of the logo */
+        }
+
+        /* Navbar styles */
+        .navbar {
+            background-color: #7b8b9c; /* Navbar background color */
+            position: fixed; /* Fixes the navbar at the top */
+            top: 0; /* Positions it at the very top */
+            width: 98%; /* Full width */
+            z-index: 1000; /* Stacks it above other elements */
+            display: flex; /* Uses flexbox for layout */
+            justify-content: space-between; /* Spaces items evenly */
+            align-items: center; /* Vertically centers items */
+            padding: 10px 20px; /* Padding inside the navbar */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds shadow */
+        }
+
+        .navbar ul {
+            list-style-type: none; /* Removes bullet points */
+            margin: 0;
+            padding: 0;
+            display: flex; /* Displays list items horizontally */
+            gap: 5px; /* Space between menu items */
+        }
+
+        .navbar ul li {
+            position: relative; /* For positioning dropdowns */
+        }
+
+        .navbar ul li a {
+            display: block; /* Makes the link fill the list item */
+            padding: 8px 12px; /* Padding around the link */
+            color: #ecf0f1; /* Link text color */
+            text-decoration: none; /* Removes underline */
+            font-weight: normal; /* Normal font weight (not bold) */
+            transition: background-color 0.3s ease; /* Smooth hover effect */
+        }
+
+        .navbar ul li a:hover {
+            background-color: #e27618; /* Background on hover */
+            border-radius: 5px; /* Rounds the corners */
+        }
+
+        .navbar ul li a.active {
+            background-color: #7b8b9c; /* Active link background */
+            color: #ffffff; /* Active link text color */
+        }
+
+        /* Dropdown menu styles */
+        .dropdown {
+            display: none; /* Hidden by default */
+            position: absolute; /* Positioned relative to parent */
+            background-color: #7b8b9c; /* Background color */
+            min-width: 160px; /* Minimum width */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* Adds shadow */
+            z-index: 1; /* Stacks above other elements */
+            top: 100%; /* Positions below the parent */
+            left: 0; /* Aligns to the left */
+            opacity: 0; /* Transparent */
+            transition: opacity 0.3s ease; /* Fade-in effect */
+        }
+
+        /* Shows the dropdown on hover or focus */
+        .navbar ul li:hover .dropdown,
+        .navbar ul li:focus-within .dropdown {
+            display: block; /* Makes it visible */
+            opacity: 1; /* Fully opaque */
+        }
+
+        .dropdown a {
+            padding: 12px 16px; /* Padding inside dropdown links */
+            text-decoration: none; /* Removes underline */
+            display: block; /* Fills the container */
+            color: #ffffff; /* Text color */
+            text-align: left; /* Left-aligns text */
+        }
+
+        .dropdown a:hover {
+            background-color: #e27618; /* Background on hover */
+        }
+
+        /* Main content styles */
+        .content {
+            padding-top: 150px;
+            color: #7b8b9c;
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #7b8b9c;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+
+        /* Table styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            border: 1px solid #dfe6e9;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #7b8b9c;
+            color: #ffffff;
+        }
+
+        td {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Slider switch styles */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+        }
+
+        input:checked + .slider {
+            background-color: #4caf50;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        .edit-btn, .delete-btn {
+            cursor: pointer;
+            padding: 5px 10px;
+            color: white;
+            background-color: #7b8b9c;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .edit-btn:hover, .delete-btn:hover {
+            background-color: #e27618;
+        }
+
+        .message {
+            display: none;
+            padding: 10px;
+            background-color: #4caf50;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .error-message {
+            display: none;
+            padding: 10px;
+            background-color: #f44336;
+            color: white;
+            border-radius: 5px;
+        }
+
+        /* Upload form styles */
+        .upload-form {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .upload-form input[type="file"], .upload-form button {
+            padding: 10px;
+            background-color: #7ed957;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .upload-form button {
+            margin-left: 10px;
+        }
+
+        .upload-form input[type="file"] {
+            cursor: pointer;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            width: 40%;
+            border-radius: 10px;
+            text-align: left;
+        }
+
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close-btn:hover {
+            color: #000;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <a href="/home" class="logo">
+        <img src="/assets/logo.png" alt="Company Logo">
+    </a>
+    <ul>
+        <li><a href="/home">Home</a></li>
+        <li>
+            <a href="/customers">Customers</a>
+            <ul class="dropdown">
+                <li><a href="/customers/groups">Groups</a></li>
+                <li><a href="/customers/wholesalers">Wholesalers</a></li>
+            </ul>
+        </li>
+        <li><a href="/sales">Sales</a></li>
+        <li>
+            <a href="/financials">Financials</a>
+            <ul class="dropdown">
+                <li><a href="/financials/tiers">Tiers</a></li>
+                <li><a href="/financials/adhoc">Ad-Hoc</a></li>
+                <li><a href="/financials/targets">Targets</a></li>
+                <li><a href="/financials/tax-invoices">Tax Invoices</a></li>
+                <li><a href="/financials/company-details">Company Details</a></li> <!-- New Company Details link -->
+            </ul>
+        </li>
+        <li><a href="/logout">Logout</a></li>
+    </ul>
+</nav>
+
+    <!-- Main Content -->
+    <div class="content">
+	<div class="content">
+        <h1>Wholesalers</h1>
+
+        <!-- Upload Form -->
+        <div class="upload-form">
+            <form id="uploadForm" enctype="multipart/form-data">
+                <input type="file" name="wholesalerFile" accept=".xlsx" required>
+                <button type="submit">Upload Wholesaler Data</button>
+            </form>
+        </div>
+
+        <div id="message" class="message">Wholesaler data uploaded successfully!</div>
+        <div id="errorMessage" class="error-message"></div>
+
+        <!-- Wholesalers Table -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Supplier</th>
+                    <th>Fees Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="wholesalerTableBody">
+                <% wholesalers.forEach(wholesaler => { %>
+                    <tr id="row-<%= wholesaler.wholesalerId %>">
+                        <td><%= wholesaler.wholesalerName %></td>
+                        <td>
+                            <label class="switch">
+                                <input type="checkbox" <%= wholesaler.feesStatus === 'Activated' ? 'checked' : '' %> 
+                                    onchange="updateFeesStatus('<%= wholesaler.wholesalerId %>', this.checked)">
+                                <span class="slider round"></span>
+                            </label>
+                        </td>
+                        <td>
+                            <button class="edit-btn" onclick="openModal('<%= wholesaler.wholesalerName %>', '<%= wholesaler.wholesalerId %>')">Edit</button>
+                            <button class="delete-btn" onclick="deleteWholesaler('<%= wholesaler.wholesalerId %>')">Delete</button>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal for editing wholesaler -->
+    <div class="modal" id="editCustomerModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2>Edit Wholesaler</h2>
+            <form id="editCustomerForm">
+                <input type="hidden" name="wholesalerId" id="wholesalerId">
+                <div class="form-group">
+                    <label for="supplierIdNew">Supplier Name:</label>
+                    <input type="text" name="supplierIdNew" id="supplierIdNew" required>
+                </div>
+                <button type="submit">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Handle XLSX file upload
+        document.getElementById('uploadForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const formData = new FormData();
+            const fileField = document.querySelector('input[name="wholesalerFile"]');
+            formData.append('file', fileField.files[0]);
+
+            try {
+                const response = await fetch('/upload-wholesalers', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    document.getElementById('message').style.display = 'block';
+                    setTimeout(() => document.getElementById('message').style.display = 'none', 3000);
+                } else {
+                    document.getElementById('errorMessage').textContent = result.message;
+                    document.getElementById('errorMessage').style.display = 'block';
+                    setTimeout(() => document.getElementById('errorMessage').style.display = 'none', 3000);
+                }
+            } catch (error) {
+                document.getElementById('errorMessage').textContent = 'Error uploading wholesalers.';
+                document.getElementById('errorMessage').style.display = 'block';
+                setTimeout(() => document.getElementById('errorMessage').style.display = 'none', 3000);
+            }
+        });
+
+        // Function to update fees status using slider
+        async function updateFeesStatus(wholesalerId, isActivated) {
+            const feesStatus = isActivated ? 'Activated' : 'Not Activated';
+            try {
+                const response = await fetch('/customers/wholesalers/update-slider', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ wholesalerId, feesStatus })
+                });
+                const result = await response.json();
+                if (!result.success) {
+                    alert('Failed to update fees status');
+                }
+            } catch (error) {
+                console.error('Error updating fees status:', error);
+                alert('Error updating fees status');
+            }
+        }
+
+        // Open modal for editing wholesaler
+        function openModal(supplierName, wholesalerId) {
+            document.getElementById('wholesalerId').value = wholesalerId;
+            document.getElementById('supplierIdNew').value = supplierName;
+            document.getElementById('editCustomerModal').style.display = 'flex';
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('editCustomerModal').style.display = 'none';
+        }
+
+        // Handle Edit Form submission
+        document.getElementById('editCustomerForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const wholesalerId = document.getElementById('wholesalerId').value;
+            const newSupplierName = document.getElementById('supplierIdNew').value;
+
+            try {
+                const response = await fetch('/customers/wholesalers/edit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ wholesalerId, newSupplierName })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    const row = document.getElementById(`row-${wholesalerId}`);
+                    row.children[0].textContent = newSupplierName;
+                    closeModal();
+                } else {
+                    alert('Failed to update wholesaler');
+                }
+            } catch (error) {
+                console.error('Error updating wholesaler:', error);
+                alert('Error updating wholesaler');
+            }
+        });
+
+        // Delete wholesaler
+        async function deleteWholesaler(wholesalerId) {
+            if (confirm('Are you sure you want to delete this wholesaler?')) {
+                try {
+                    const response = await fetch(`/customers/wholesalers/delete/${wholesalerId}`, {
+                        method: 'DELETE'
+                    });
+                    const result = await response.json();
+                    if (result.success) {
+                        const row = document.getElementById(`row-${wholesalerId}`);
+                        row.remove();
+                    } else {
+                        alert('Failed to delete wholesaler');
+                    }
+                } catch (error) {
+                    console.error('Error deleting wholesaler:', error);
+                    alert('Error deleting wholesaler');
+                }
+            }
+        }
+    </script>
+</body>
+</html>
