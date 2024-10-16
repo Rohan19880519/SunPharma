@@ -229,7 +229,6 @@
 <body>
 
 <!-- Navbar -->
-<!-- Navbar -->
 <nav class="navbar">
     <a href="/home" class="logo">
         <img src="/assets/logo.png" alt="Company Logo">
@@ -243,7 +242,11 @@
                 <li><a href="/customers/wholesalers">Wholesalers</a></li>
             </ul>
         </li>
-        <li><a href="/sales">Sales</a></li>
+        <li><a href="/sales">Sales</a>
+            <ul class="dropdown">
+                <li><a href="/sales/products">Products</a></li> <!-- New Page Link -->
+            </ul>
+        </li>
         <li>
             <a href="/financials">Financials</a>
             <ul class="dropdown">
@@ -254,9 +257,18 @@
                 <li><a href="/financials/company-details">Company Details</a></li>
             </ul>
         </li>
+        <li>
+            <a href="/representatives">Representatives</a>
+            <ul class="dropdown">
+                <li><a href="/representatives/targets">Representative Targets</a></li>
+                <li><a href="/representatives/request-funds">Request For Funds</a></li>
+                <li><a href="/representatives/rsm">RSM's</a></li>
+            </ul>
+        </li>
         <li><a href="/logout">Logout</a></li>
     </ul>
 </nav>
+
 
 
 <div id="message" class="message">Action completed successfully!</div>
@@ -278,7 +290,7 @@
             <tr>
                 <th>Customer Name</th>
                 <th>Target</th>
-                <th>Data Fee%</th> <!-- New Data Fee% Column -->
+                <th>Data Fee</th> <!-- New Data Fee% Column -->
                 <th>Actions</th>
             </tr>
         </thead>
@@ -347,26 +359,31 @@
     }
 
     // Append targets to the table
-    function appendTargetsToTable(targets) {
-        const tableBody = document.getElementById('targetsTableBody');
-        const rowsFragment = document.createDocumentFragment();
+	function appendTargetsToTable(targets) {
+		const tableBody = document.getElementById('targetsTableBody');
+		const rowsFragment = document.createDocumentFragment();
 
-        targets.forEach(target => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${target.customer_name}</td>
-                <td>${target.target}</td>
-                <td>${target.data_fee || 'N/A'}</td> <!-- New Data Fee% column in row -->
-                <td>
-                    <button class="edit-btn" onclick="editTarget(${target.id})">Edit</button>
-                    <button class="delete-btn" onclick="deleteTarget(${target.id})">Delete</button>
-                </td>
-            `;
-            rowsFragment.appendChild(row);
-        });
+		targets.forEach(target => {
+			// Log target details for debugging
+			console.log('Rendering Target:', target);
 
-        tableBody.appendChild(rowsFragment);
-    }
+			const row = document.createElement('tr');
+			row.innerHTML = `
+				<td>${target.customer_name}</td>
+				<td>${target.target}</td>
+				<td>${target.DataFee !== null && target.DataFee !== undefined ? target.DataFee : 'N/A'}</td> <!-- Correct to DataFee -->
+				<td>
+					<button class="edit-btn" onclick="editTarget(${target.id})">Edit</button>
+					<button class="delete-btn" onclick="deleteTarget(${target.id})">Delete</button>
+				</td>
+			`;
+			rowsFragment.appendChild(row);
+		});
+
+		tableBody.appendChild(rowsFragment);
+	}
+
+
 
     // Search functionality
     function debouncedSearch() {
@@ -420,7 +437,7 @@
         // Pre-fill the form
         document.getElementById("editCustomerName").value = targetToEdit.customer_name;
         document.getElementById("editTarget").value = targetToEdit.target;
-        document.getElementById("editDataFee").value = targetToEdit.data_fee || ''; // Pre-fill Data Fee% input
+        document.getElementById("editDataFee").value = targetToEdit.data_fee || ''; // Pre-fill Data Fee input
 
         // Handle form submission
         const form = document.getElementById("editTargetForm");
@@ -428,7 +445,7 @@
             event.preventDefault(); // Prevent form submission
             const updatedCustomerName = document.getElementById("editCustomerName").value;
             const updatedTarget = document.getElementById("editTarget").value;
-            const updatedDataFee = document.getElementById("editDataFee").value; // Get Data Fee%
+            const updatedDataFee = document.getElementById("editDataFee").value; // Get Data Fee
 
             if (updatedCustomerName && updatedTarget && updatedDataFee) {
                 await updateTarget(id, updatedCustomerName, updatedTarget, updatedDataFee);
@@ -452,6 +469,9 @@
 
 async function updateTarget(id, customerName, target, dataFee) {
     try {
+        // Log the data being sent for debugging purposes
+        console.log('Updating Target:', { id, customerName, target, dataFee });
+
         const response = await fetch(`/financials/targets/${id}/edit`, {
             method: 'PUT',
             headers: {
@@ -462,6 +482,9 @@ async function updateTarget(id, customerName, target, dataFee) {
 
         const result = await response.json();
         if (result.success) {
+            // Log response for debugging purposes
+            console.log('Update response:', result);
+
             allTargets = allTargets.map(t => t.id === id ? { id, customer_name: customerName, target, data_fee: dataFee } : t);
             displaySearchResults(allTargets);
             showMessage('Target updated successfully!');

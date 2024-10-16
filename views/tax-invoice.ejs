@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tax Invoice</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Century+Gothic&display=swap">
+    <style>
+        body {
+            font-family: 'Century Gothic', 'Poppins', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .invoice-container {
+            background-color: #ffffff;
+            padding: 20px;
+            max-width: 800px;
+            margin: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin: 10px 0;
+            font-size: 1.8em;
+        }
+        .section-title {
+            background-color: #4CAF50;
+            color: #ffffff;
+            padding: 6px;
+            text-align: center;
+            font-size: 1.3em;
+            margin: 0 0 10px 0;
+            border-radius: 4px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        table th, table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: left;
+            font-size: 0.9em;
+        }
+        table th {
+            background-color: #f0f0f0;
+        }
+        .table-section {
+            margin: 5px 0;
+        }
+        .total-amount {
+            text-align: right;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin: 10px 0;
+            color: #333;
+        }
+        .contact-details, .footer {
+            text-align: center;
+            font-size: 0.85em;
+            color: #555;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-container">
+        <h1>Tax Invoice</h1>
+
+        <!-- Company Details Section -->
+        <div class="table-section">
+            <h2 class="section-title">Company Details</h2>
+            <table>
+                <tr>
+                    <th>Company Name</th>
+                    <td><%= invoice.customer_name_invoiced_to || 'N/A' %></td>
+                    <th>Contact Person</th>
+                    <td><%= invoice.customer_contact_person || 'N/A' %></td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td><%= invoice.customer_email || 'N/A' %></td>
+                    <th>Telephone</th>
+                    <td><%= invoice.customer_phone || 'N/A' %></td>
+                </tr>
+                <tr>
+                    <th>Physical Address</th>
+                    <td colspan="3"><%= invoice.customer_address || 'N/A' %></td>
+                </tr>
+                <tr>
+                    <th>VAT Number</th>
+                    <td><%= invoice.customer_vat_number || 'N/A' %></td>
+                    <th>Trading As</th>
+                    <td><%= invoice.customer_trading_name || 'N/A' %></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Supplier Details Section -->
+        <div class="table-section">
+            <h2 class="section-title">Customer Details</h2>
+            <table>
+                <tr>
+                    <th>Company Name</th>
+                    <td><%= invoice.supplier_name_invoiced_from || 'N/A' %></td>
+                    <th>Email</th>
+                    <td><%= invoice.supplier_email || 'N/A' %></td>
+                </tr>
+                <tr>
+                    <th>Contact Name</th>
+                    <td><%= invoice.supplier_contact_name || 'N/A' %></td>
+                    <th>Telephone</th>
+                    <td><%= invoice.supplier_phone || 'N/A' %></td>
+                </tr>
+                <tr>
+                    <th>Address</th>
+                    <td colspan="3"><%= invoice.supplier_address || 'N/A' %></td>
+                </tr>
+                <tr>
+                    <th>VAT Number</th>
+                    <td><%= invoice.supplier_vat_number || 'N/A' %></td>
+                    <th>Trading As</th>
+                    <td><%= invoice.supplier_trading_name || 'N/A' %></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Invoice Information Section -->
+        <div class="table-section">
+            <h2 class="section-title">Invoice Information</h2>
+            <table>
+                <tr>
+                    <th>Invoice Number</th>
+                    <td><%= invoice.InvoiceNumber || 'N/A' %></td>
+                    <th>Invoice Date</th>
+                    <td><%= invoice.InvoiceDate ? new Date(invoice.InvoiceDate).toLocaleDateString() : 'N/A' %></td>
+                </tr>
+                <tr>
+                    <th>Total Amount</th>
+                    <td colspan="3"><%= invoice.TotalAmount ? invoice.TotalAmount.toFixed(2) : '0.00' %></td>
+                </tr>
+                <tr>
+                    <th>Total Fees</th>
+                    <td colspan="3"><%= invoice.total_fees ? invoice.total_fees.toFixed(2) : '0.00' %></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Product Information Section -->
+        <div class="table-section">
+            <h2 class="section-title">Product Information</h2>
+            <table>
+                <tr>
+                    <th>Price of Product</th>
+                    <td><%= invoice.product_price || 'N/A' %></td>
+                    <th>Product Rep Name</th>
+                    <td><%= invoice.product_rep_name || 'N/A' %></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="contact-details">
+            <p>Thank you for your business!</p>
+        </div>
+    </div>
+</body>
+</html>

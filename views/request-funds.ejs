@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Funds for RBA</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        body {
+            font-family: 'Century Gothic', sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Adjust Logo */
+        .navbar .logo img {
+            height: 50px; /* Sets the logo height */
+            width: auto; /* Keeps the aspect ratio */
+            margin-right: 10px; /* Space to the right of the logo */
+        }
+
+        /* Navbar styles */
+        .navbar {
+            background-color: #7b8b9c; /* Navbar background color */
+            position: fixed; /* Fixes the navbar at the top */
+            top: 0; /* Positions it at the very top */
+            width: 98%; /* Full width */
+            z-index: 1000; /* Stacks it above other elements */
+            display: flex; /* Uses flexbox for layout */
+            justify-content: space-between; /* Spaces items evenly */
+            align-items: center; /* Vertically centers items */
+            padding: 10px 20px; /* Padding inside the navbar */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds shadow */
+        }
+
+        .navbar ul {
+            list-style-type: none; /* Removes bullet points */
+            margin: 0;
+            padding: 0;
+            display: flex; /* Displays list items horizontally */
+            gap: 5px; /* Space between menu items */
+        }
+
+        .navbar ul li {
+            position: relative; /* For positioning dropdowns */
+        }
+
+        .navbar ul li a {
+            display: block; /* Makes the link fill the list item */
+            padding: 8px 12px; /* Padding around the link */
+            color: #ecf0f1; /* Link text color */
+            text-decoration: none; /* Removes underline */
+            font-weight: normal; /* Normal font weight (not bold) */
+            transition: background-color 0.3s ease; /* Smooth hover effect */
+        }
+
+        .navbar ul li a:hover {
+            background-color: #e27618; /* Background on hover */
+            border-radius: 5px; /* Rounds the corners */
+        }
+
+        .navbar ul li a.active {
+            background-color: #7b8b9c; /* Active link background */
+            color: #ffffff; /* Active link text color */
+        }
+
+        /* Dropdown menu styles */
+        .dropdown {
+            display: none; /* Hidden by default */
+            position: absolute; /* Positioned relative to parent */
+            background-color: #7b8b9c; /* Background color */
+            min-width: 160px; /* Minimum width */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* Adds shadow */
+            z-index: 1; /* Stacks above other elements */
+            top: 100%; /* Positions below the parent */
+            left: 0; /* Aligns to the left */
+            opacity: 0; /* Transparent */
+            transition: opacity 0.3s ease; /* Fade-in effect */
+        }
+
+        /* Shows the dropdown on hover or focus */
+        .navbar ul li:hover .dropdown,
+        .navbar ul li:focus-within .dropdown {
+            display: block; /* Makes it visible */
+            opacity: 1; /* Fully opaque */
+        }
+
+        .dropdown a {
+            padding: 12px 16px; /* Padding inside dropdown links */
+            text-decoration: none; /* Removes underline */
+            display: block; /* Fills the container */
+            color: #ffffff; /* Text color */
+            text-align: left; /* Left-aligns text */
+        }
+
+        .dropdown a:hover {
+            background-color: #e27618; /* Background on hover */
+        }
+
+        /* Form and approval container styles */
+        .form-container, .approval-container {
+            background-color: #ffffff;
+            max-width: 1200px; /* Increased the width for better display */
+            margin: 100px auto 20px;
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .form-container h1, .approval-container h1 {
+            color: #7b8b9c;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, 
+        .form-group textarea, 
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+        }
+
+        .submit-button, .approval-button {
+            background-color: #7b8b9c;
+            color: #fff;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        .submit-button:hover, .approval-button:hover {
+            background-color: #e27618;
+        }
+
+        .approval-status, .message {
+            font-weight: bold;
+            margin-top: 15px;
+            color: #333;
+            text-align: center;
+        }
+
+        .message.success {
+            color: green;
+        }
+
+        .message.error {
+            color: red;
+        }
+
+        /* Approval table styles */
+        .approval-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .approval-table th, .approval-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .approval-table th {
+            background-color: #7b8b9c;
+            color: #ffffff;
+        }
+
+        .approval-table tbody tr:hover {
+            background-color: #f1f1f1; /* Add hover effect for better interaction */
+        }
+
+        .download-button {
+            background-color: #e27618;
+            color: #fff;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .download-button:hover {
+            background-color: #d16510;
+        }
+    </style>
+</head>
+<body>
+
+
+<!-- Navbar -->
+<nav class="navbar">
+    <a href="/home" class="logo">
+        <img src="/assets/logo.png" alt="Company Logo">
+    </a>
+    <ul>
+        <li><a href="/home">Home</a></li>
+        <li>
+            <a href="/customers">Customers</a>
+            <ul class="dropdown">
+                <li><a href="/customers/groups">Groups</a></li>
+                <li><a href="/customers/wholesalers">Wholesalers</a></li>
+            </ul>
+        </li>
+        <li><a href="/sales">Sales</a>
+            <ul class="dropdown">
+                <li><a href="/sales/products">Products</a></li> <!-- New Page Link -->
+            </ul>
+        </li>
+        <li>
+            <a href="/financials">Financials</a>
+            <ul class="dropdown">
+                <li><a href="/financials/tiers">Tiers</a></li>
+                <li><a href="/financials/adhoc">Ad-Hoc</a></li>
+                <li><a href="/financials/targets">Targets</a></li>
+                <li><a href="/financials/tax-invoices">Tax Invoices</a></li>
+                <li><a href="/financials/company-details">Company Details</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="/representatives">Representatives</a>
+            <ul class="dropdown">
+                <li><a href="/representatives/targets">Representative Targets</a></li>
+                <li><a href="/representatives/request-funds">Request For Funds</a></li>
+                <li><a href="/representatives/rsm">RSM's</a></li>
+            </ul>
+        </li>
+        <li><a href="/logout">Logout</a></li>
+    </ul>
+</nav>
+
+<!-- Form Container -->
+<div class="form-container">
+    <h1>Request for Funds for RBA</h1>
+
+	<form id="rba-request-form" method="POST" action="/representatives/request-funds">
+		<div class="form-group">
+			<label for="psr-manager-name">PSR and Manager's Name:</label>
+			<input type="text" id="psr-manager-name" name="psr_manager_name" required>
+		</div>
+		<div class="form-group">
+			<label for="brand-manager">Brand Manager / Manager's Funding:</label>
+			<input type="text" id="brand-manager" name="brand_manager" required>
+		</div>
+		<div class="form-group">
+			<label for="brands">Brand / Brands:</label>
+			<input type="text" id="brands" name="brands" required>
+		</div>
+		<div class="form-group">
+			<label for="customer-info">Customer Information:</label>
+			<input type="text" id="customer-info" name="customer_information" required>
+		</div>
+		<div class="form-group">
+			<label for="customer-name">Customer / Store Name:</label>
+			<input type="text" id="customer-name" name="customer_name" required>
+		</div>
+		<div class="form-group">
+			<label for="request-date">Date:</label>
+			<input type="date" id="request-date" name="request_date" required>
+		</div>
+		<div class="form-group">
+			<label for="amount-requested">Amount Requested and Payment Date:</label>
+			<input type="text" id="amount-requested" name="amount_requested" required>
+		</div>
+		<div class="form-group">
+			<label for="details">Details of Request (RBA, educational fees, etc.):</label>
+			<textarea id="details" name="details_of_request" rows="4" required></textarea>
+		</div>
+		<div class="form-group">
+			<label for="card-info">Slip Mate Account/Card Information:</label>
+			<textarea id="card-info" name="card_information" rows="3" required></textarea>
+		</div>
+		<button type="submit" class="submit-button">Submit Request</button>
+	</form>
+
+    <div class="message" id="form-message"></div>
+</div>
+
+<!-- Approval Container -->
+<div class="approval-container" id="approval-section">
+    <h1>Approval Process</h1>
+
+    <% if (approvalData && approvalData.length > 0) { %>
+        <table class="approval-table">
+            <thead>
+                <tr>
+                    <th>Request ID</th>
+                    <th>PSR Manager</th>
+                    <th>Brand Manager</th>
+                    <th>Brands</th>
+                    <th>Amount Requested</th>
+                    <th>Manager Approval</th>
+                    <th>Brand Manager Approval</th>
+                    <th>Marketing Head Approval</th>
+                    <th>Head of Sales Approval</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% approvalData.forEach(function(request) { %>
+                    <tr>
+                        <td><%= request.RequestId %></td>
+                        <td><%= request.PSRManagerName %></td>
+                        <td><%= request.BrandManager %></td>
+                        <td><%= request.Brands %></td>
+                        <td><%= request.AmountRequested %></td>
+                        <td>
+                            <div><%= request.ManagerApprovalStatus || 'Pending' %></div>
+                            <button class="approval-button approve" data-request-id="<%= request.RequestId %>" data-role="Manager">Approve</button>
+                            <button class="approval-button reject" data-request-id="<%= request.RequestId %>" data-role="Manager">Reject</button>
+                        </td>
+                        <td>
+                            <div><%= request.BrandManagerApprovalStatus || 'Pending' %></div>
+                            <button class="approval-button approve" data-request-id="<%= request.RequestId %>" data-role="BrandManager">Approve</button>
+                            <button class="approval-button reject" data-request-id="<%= request.RequestId %>" data-role="BrandManager">Reject</button>
+                        </td>
+                        <td>
+                            <div><%= request.MarketingHeadApprovalStatus || 'Pending' %></div>
+                            <button class="approval-button approve" data-request-id="<%= request.RequestId %>" data-role="MarketingHead">Approve</button>
+                            <button class="approval-button reject" data-request-id="<%= request.RequestId %>" data-role="MarketingHead">Reject</button>
+                        </td>
+                        <td>
+                            <div><%= request.HeadOfSalesApprovalStatus || 'Pending' %></div>
+                            <button class="approval-button approve" data-request-id="<%= request.RequestId %>" data-role="HeadOfSales">Approve</button>
+                            <button class="approval-button reject" data-request-id="<%= request.RequestId %>" data-role="HeadOfSales">Reject</button>
+                        </td>
+                        <td>
+                            <a href="/representatives/download-pdf/<%= request.RequestId %>" class="download-button">Download PDF</a>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    <% } else { %>
+        <p class="approval-status">No requests found or approval process is not currently active.</p>
+    <% } %>
+</div>
+
+<script>
+    // Event delegation for handling approve and reject buttons
+    document.querySelectorAll('.approval-button').forEach(button => {
+        button.addEventListener('click', async function() {
+            const requestId = this.getAttribute('data-request-id');
+            const action = this.classList.contains('approve') ? 'approve' : 'reject';
+            const role = this.getAttribute('data-role'); // Determine the role
+
+            try {
+                const response = await fetch(`/representatives/approval/${requestId}/${role}/${action}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                });
+
+                if (response.ok) {
+                    alert(`Request ${action}d successfully for ${role}!`);
+                    location.reload(); // Refresh the page to update the status
+                } else {
+                    alert(`Failed to ${action} the request for ${role}.`);
+                }
+            } catch (error) {
+                console.error(`Error processing the ${action} request for ${role}:`, error);
+                alert(`An error occurred while processing the request.`);
+            }
+        });
+    });
+</script>
+
+
+<script>
+    // Event delegation for handling approve and reject buttons
+    document.querySelectorAll('.approval-button').forEach(button => {
+        button.addEventListener('click', async function() {
+            const requestId = this.getAttribute('data-request-id');
+            const action = this.classList.contains('approve') ? 'approve' : 'reject';
+
+            try {
+                const response = await fetch(`/representatives/approval/${requestId}/${action}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                });
+
+                if (response.ok) {
+                    alert(`Request ${action}d successfully!`);
+                    location.reload(); // Refresh the page to update the status
+                } else {
+                    alert(`Failed to ${action} the request.`);
+                }
+            } catch (error) {
+                console.error(`Error processing the ${action} request:`, error);
+                alert(`An error occurred while processing the request.`);
+            }
+        });
+    });
+</script>
+
+
+
+<script>
+    // AJAX form submission to keep user on the same page
+	document.getElementById('rba-request-form').addEventListener('submit', async function(event) {
+		event.preventDefault();
+		const formData = new FormData(this);
+		const messageElement = document.getElementById('form-message');
+
+		try {
+			const response = await fetch('/representatives/request-funds', {
+				method: 'POST',
+				body: new URLSearchParams(formData) // Convert FormData to URLSearchParams
+			});
+
+			if (response.ok) {
+				messageElement.textContent = 'Request submitted successfully!';
+				messageElement.className = 'message success';
+				this.reset();
+			} else {
+				messageElement.textContent = 'Failed to submit the request.';
+				messageElement.className = 'message error';
+			}
+		} catch (error) {
+			console.error('Error submitting form:', error);
+			messageElement.textContent = 'An error occurred while submitting the request.';
+			messageElement.className = 'message error';
+		}
+	});
+
+</script>
+
+</body>
+</html>

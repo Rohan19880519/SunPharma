@@ -1,13 +1,16 @@
-const sql = require('mssql');
-const sqlConfig = require('../config/dbConfig');
+const { sql, poolPromise } = require('../config/dbconfig'); // Import the shared poolPromise from dbconfig
 const xlsx = require('xlsx');
 const fs = require('fs');
+const bcrypt = require('bcryptjs'); 
+
+
+
 
 // Get all customers
 exports.getAllCustomers = async (req, res) => {
     try {
-        let pool = await sql.connect(sqlConfig);
-        let result = await pool.request().query('SELECT * FROM Customers');
+        const pool = await poolPromise; // Reuse poolPromise
+        const result = await pool.request().query('SELECT * FROM Customers');
         res.render('customers', { customers: result.recordset });
     } catch (err) {
         console.error('Error fetching customers:', err);
@@ -38,7 +41,7 @@ exports.uploadCustomers = async (req, res) => {
         const worksheet = workbook.Sheets[sheetName];
         const customers = xlsx.utils.sheet_to_json(worksheet);
 
-        let pool = await sql.connect(sqlConfig);
+        const pool = await poolPromise; // Reuse poolPromise
 
         for (const customer of customers) {
             // Sanitize all inputs
@@ -79,7 +82,7 @@ exports.uploadCustomers = async (req, res) => {
                 .input('targetBased', sql.Bit, customer['Target Based'] === 'Yes' ? 1 : 0)
                 .input('tierBased', sql.Bit, customer['Tier Based'] === 'Yes' ? 1 : 0)
                 .input('adhocBased', sql.Bit, customer['Adhoc Based'] === 'Yes' ? 1 : 0)
-				.input('groupYesNo', sql.VarChar, sanitizeString(customer['Group Yes or No']) || '')
+                .input('groupYesNo', sql.VarChar, sanitizeString(customer['Group Yes or No']) || '')
                 .query(`
                     INSERT INTO Customers (
                         customerName, companyName, tradingAs, physicalAddress, postalAddress, telephoneNumber, faxNumber, 
@@ -105,7 +108,7 @@ exports.uploadCustomers = async (req, res) => {
 
 // Edit customer
 exports.editCustomer = async (req, res) => {
-    // Edit customer logic
+    // Implement the logic for editing a customer
 };
 
 // Delete customer
@@ -113,7 +116,7 @@ exports.deleteCustomer = async (req, res) => {
     const customerId = req.params.id;
 
     try {
-        let pool = await sql.connect(sqlConfig);
+        const pool = await poolPromise;
         await pool.request()
             .input('customerId', sql.Int, customerId)
             .query('DELETE FROM Customers WHERE customerId = @customerId');
@@ -125,13 +128,13 @@ exports.deleteCustomer = async (req, res) => {
     }
 };
 
-// In customerController.js
+// Fetch sub-customers for a given parent customer
 exports.getSubCustomers = async (req, res) => {
     const parentCustomerId = req.params.id;
 
     try {
-        let pool = await sql.connect(sqlConfig);
-        let result = await pool.request()
+        const pool = await poolPromise;
+        const result = await pool.request()
             .input('parentCustomerId', sql.Int, parentCustomerId)
             .query(`
                 SELECT c.* 

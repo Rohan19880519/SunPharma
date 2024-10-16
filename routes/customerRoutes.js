@@ -10,11 +10,6 @@ const path = require('path');
 const config = require('../config/dbConfig'); // Ensure this path is correct
 
 
-
-
-
-
-
 router.post('/update-slider', async (req, res) => {
     const { customerId, field, value } = req.body;
 
@@ -990,11 +985,11 @@ router.post('/financials/targets/upload', upload.single('file'), async (req, res
 // Route to fetch all targets from the database
 router.get('/financials/targets/list', async (req, res) => {
     try {
-        // Connect to SQL Server
         await sql.connect(config);
-
-        // Query to fetch all targets from the database, including DataFee
         const result = await sql.query`SELECT [id], [customer_name], [target], [DataFee] FROM [dbo].[targets]`;
+
+        // Log the fetched results to inspect DataFee values
+        console.log(result.recordset);
 
         if (result.recordset.length > 0) {
             res.json({ success: true, data: result.recordset });
@@ -1105,10 +1100,14 @@ router.get('/financials/company-details', (req, res) => {
     res.render('company-details');  // Ensure you have a company-details.ejs in your 'views' folder
 });
 
-// API route to fetch company details in JSON format
+// API route to fetch company details in JSON format for a specific company
 router.get('/api/company-details', async (req, res) => {
+    const companyId = req.query.companyId || 1;  // Default to company 1 if no companyId is provided
+
     try {
-        const result = await sql.query`SELECT TOP 1 * FROM dbo.company_details`;
+        const result = await sql.query`
+            SELECT TOP 1 * FROM dbo.CompanyDetails WHERE company_id = ${companyId}
+        `;
         if (result.recordset.length > 0) {
             res.json({ success: true, data: result.recordset[0] });
         } else {
@@ -1120,40 +1119,79 @@ router.get('/api/company-details', async (req, res) => {
     }
 });
 
-// Route to update company details
+
+
+// Route to update company details for a specific company
 router.put('/financials/company-details/edit', async (req, res) => {
-    const { registered_company_name, trading_as, physical_address, telephone_number, finance_contact_person, finance_email_address, vat_number } = req.body;
+    const {
+        company_id,
+        registered_company_name,
+        trading_as,
+        physical_address,
+        telephone_number,
+        finance_contact_person,
+        finance_email_address,
+        vat_number
+    } = req.body;
 
     try {
         await sql.connect(sqlConfig);
 
-        // Check if any company details exist, if not, insert new details, else update
-        const existing = await sql.query`SELECT TOP 1 id FROM company_details`;
+        // Check if the company with the provided company_id exists
+        const existingCompany = await sql.query`
+            SELECT TOP 1 company_id FROM dbo.CompanyDetails WHERE company_id = ${company_id}
+        `;
 
-        if (existing.recordset.length > 0) {
+        // If the company exists, update the existing record
+        if (existingCompany.recordset.length > 0) {
             await sql.query`
-                UPDATE company_details
-                SET registered_company_name = ${registered_company_name},
+                UPDATE dbo.CompanyDetails
+                SET 
+                    registered_company_name = ${registered_company_name},
                     trading_as = ${trading_as},
                     physical_address = ${physical_address},
                     telephone_number = ${telephone_number},
                     finance_contact_person = ${finance_contact_person},
                     finance_email_address = ${finance_email_address},
                     vat_number = ${vat_number}
-                WHERE id = ${existing.recordset[0].id}
+                WHERE company_id = ${company_id}
             `;
-        } else {
+            res.json({ success: true, message: `Company ${company_id} details updated successfully!` });
+        } 
+        // If the company doesn't exist, insert a new record
+        else {
             await sql.query`
-                INSERT INTO company_details (registered_company_name, trading_as, physical_address, telephone_number, finance_contact_person, finance_email_address, vat_number)
-                VALUES (${registered_company_name}, ${trading_as}, ${physical_address}, ${telephone_number}, ${finance_contact_person}, ${finance_email_address}, ${vat_number})
+                INSERT INTO dbo.CompanyDetails 
+                (
+                    company_id, 
+                    registered_company_name, 
+                    trading_as, 
+                    physical_address, 
+                    telephone_number, 
+                    finance_contact_person, 
+                    finance_email_address, 
+                    vat_number
+                )
+                VALUES 
+                (
+                    ${company_id}, 
+                    ${registered_company_name}, 
+                    ${trading_as}, 
+                    ${physical_address}, 
+                    ${telephone_number}, 
+                    ${finance_contact_person}, 
+                    ${finance_email_address}, 
+                    ${vat_number}
+                )
             `;
+            res.json({ success: true, message: `Company ${company_id} details inserted successfully!` });
         }
-
-        res.json({ success: true, message: 'Company details updated successfully!' });
     } catch (err) {
         console.error('SQL error', err);
-        res.status(500).json({ success: false, message: 'Failed to update company details' });
+        res.status(500).json({ success: false, message: 'Failed to update or insert company details' });
     }
 });
+
+
 
 module.exports = router;

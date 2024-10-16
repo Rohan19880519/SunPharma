@@ -24,13 +24,14 @@
             background-color: #7b8b9c;
             position: fixed;
             top: 0;
-            width: 98%;
+            width: 100%;
             z-index: 1000;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 10px 20px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            height: 50px; /* Ensure the navbar has a fixed height */
         }
 
         .navbar ul {
@@ -42,7 +43,7 @@
         }
 
         .navbar ul li {
-            position: relative; /* Needed for dropdown positioning */
+            position: relative;
         }
 
         .navbar ul li a {
@@ -88,7 +89,6 @@
             background-color: #e27618;
         }
 
-        /* Show dropdown when hovering over the parent list item */
         .navbar ul li:hover .dropdown,
         .navbar ul li:focus-within .dropdown {
             display: block;
@@ -96,9 +96,11 @@
         }
 
         /* Main content styles */
+        /* Content styles */
         .content {
-            padding-top: 150px;
-            padding: 30px;
+            padding-top: 150px; /* Adjust padding top for navbar */
+            color: #7b8b9c;
+            padding: 60px;
             text-align: center;
         }
 
@@ -110,12 +112,11 @@
 
         /* Form container styles */
         .form-container {
-            max-width: 600px;
+            max-width: 1200px;
             margin: 0 auto;
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            gap: 20px;
+            justify-content: space-between;
         }
 
         .form-group {
@@ -130,6 +131,14 @@
         }
 
         .form-group input {
+            padding: 10px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        select {
             padding: 10px;
             width: 100%;
             border: 1px solid #ccc;
@@ -169,11 +178,24 @@
             margin-top: 20px;
             border-radius: 5px;
         }
+
+        /* Styles for two forms side-by-side */
+        .form-column {
+            width: 48%;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #7b8b9c;
+            text-align: center;
+            font-size: 1.5rem;
+        }
     </style>
 </head>
 <body>
-
-<!-- Navbar -->
 <nav class="navbar">
     <a href="/home" class="logo">
         <img src="/assets/logo.png" alt="Company Logo">
@@ -187,7 +209,11 @@
                 <li><a href="/customers/wholesalers">Wholesalers</a></li>
             </ul>
         </li>
-        <li><a href="/sales">Sales</a></li>
+        <li><a href="/sales">Sales</a>
+            <ul class="dropdown">
+                <li><a href="/sales/products">Products</a></li> <!-- New Page Link -->
+            </ul>
+        </li>
         <li>
             <a href="/financials">Financials</a>
             <ul class="dropdown">
@@ -198,92 +224,156 @@
                 <li><a href="/financials/company-details">Company Details</a></li>
             </ul>
         </li>
+        <li>
+            <a href="/representatives">Representatives</a>
+            <ul class="dropdown">
+                <li><a href="/representatives/targets">Representative Targets</a></li>
+                <li><a href="/representatives/request-funds">Request For Funds</a></li>
+                <li><a href="/representatives/rsm">RSM's</a></li>
+            </ul>
+        </li>
         <li><a href="/logout">Logout</a></li>
     </ul>
 </nav>
 
-<!-- Main Content -->
-<div class="content">
-<br>
-    <h1>Company Details</h1>
 
-    <div class="form-container">
-	<br>
-        <form id="companyDetailsForm">
-            <div class="form-group">
-                <label for="registeredCompanyName">Registered Company Name</label>
-                <input type="text" id="registeredCompanyName" name="registered_company_name" required>
-            </div>
-            <div class="form-group">
-                <label for="tradingAs">Trading As</label>
-                <input type="text" id="tradingAs" name="trading_as" required>
-            </div>
-            <div class="form-group">
-                <label for="physicalAddress">Physical Address</label>
-                <input type="text" id="physicalAddress" name="physical_address" required>
-            </div>
-            <div class="form-group">
-                <label for="telephoneNumber">Telephone Number</label>
-                <input type="text" id="telephoneNumber" name="telephone_number" required>
-            </div>
-            <div class="form-group">
-                <label for="financeContactPerson">Finance Contact Person</label>
-                <input type="text" id="financeContactPerson" name="finance_contact_person" required>
-            </div>
-            <div class="form-group">
-                <label for="financeEmailAddress">Finance Email Address</label>
-                <input type="email" id="financeEmailAddress" name="finance_email_address" required>
-            </div>
-            <div class="form-group">
-                <label for="vatNumber">VAT Number</label>
-                <input type="text" id="vatNumber" name="vat_number" required>
-            </div>
-            <button type="submit">Save Company Details</button>
-        </form>
+    <div class="content">
+        <h1>Company Details</h1>
+        <div class="form-container">
+            <div class="form-column">
+                <h2>Company 1</h2>
+            <form id="companyDetailsForm1">
+                <div class="form-group">
+                    <label for="registeredCompanyName1">Registered Company Name</label>
+                    <input type="text" id="registeredCompanyName1" name="registered_company_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="tradingAs1">Trading As</label>
+                    <input type="text" id="tradingAs1" name="trading_as" required>
+                </div>
+                <div class="form-group">
+                    <label for="physicalAddress1">Physical Address</label>
+                    <input type="text" id="physicalAddress1" name="physical_address" required>
+                </div>
+                <div class="form-group">
+                    <label for="telephoneNumber1">Telephone Number</label>
+                    <input type="text" id="telephoneNumber1" name="telephone_number" required>
+                </div>
+                <div class="form-group">
+                    <label for="financeContactPerson1">Finance Contact Person</label>
+                    <input type="text" id="financeContactPerson1" name="finance_contact_person" required>
+                </div>
+                <div class="form-group">
+                    <label for="financeEmailAddress1">Finance Email Address</label>
+                    <input type="email" id="financeEmailAddress1" name="finance_email_address" required>
+                </div>
+                <div class="form-group">
+                    <label for="vatNumber1">VAT Number</label>
+                    <input type="text" id="vatNumber1" name="vat_number" required>
+                </div>
+                <button type="submit">Save Company 1 Details</button>
+            </form>
+        </div>
 
-        <div id="message" class="message">Company details updated successfully!</div>
-        <div id="errorMessage" class="error-message">An error occurred while updating the details.</div>
+        <!-- Form for Company 2 -->
+        <div class="form-column">
+            <h2>Company 2</h2>
+            <form id="companyDetailsForm2">
+                <div class="form-group">
+                    <label for="registeredCompanyName2">Registered Company Name</label>
+                    <input type="text" id="registeredCompanyName2" name="registered_company_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="tradingAs2">Trading As</label>
+                    <input type="text" id="tradingAs2" name="trading_as" required>
+                </div>
+                <div class="form-group">
+                    <label for="physicalAddress2">Physical Address</label>
+                    <input type="text" id="physicalAddress2" name="physical_address" required>
+                </div>
+                <div class="form-group">
+                    <label for="telephoneNumber2">Telephone Number</label>
+                    <input type="text" id="telephoneNumber2" name="telephone_number" required>
+                </div>
+                <div class="form-group">
+                    <label for="financeContactPerson2">Finance Contact Person</label>
+                    <input type="text" id="financeContactPerson2" name="finance_contact_person" required>
+                </div>
+                <div class="form-group">
+                    <label for="financeEmailAddress2">Finance Email Address</label>
+                    <input type="email" id="financeEmailAddress2" name="finance_email_address" required>
+                </div>
+                <div class="form-group">
+                    <label for="vatNumber2">VAT Number</label>
+                    <input type="text" id="vatNumber2" name="vat_number" required>
+                </div>
+                <button type="submit">Save Company 2 Details</button>
+            </form>
+        </div>
     </div>
+
+    <div id="message" class="message">Company details updated successfully!</div>
+    <div id="errorMessage" class="error-message">An error occurred while updating the details.</div>
 </div>
 
 <script>
-    // Fetch and populate the company details on page load
-    async function fetchCompanyDetails() {
+    // Fetch and populate company 1 details
+    async function fetchCompany1Details() {
         try {
-            const response = await fetch('/api/company-details');
+            const response = await fetch('/api/company-details?companyId=1');
             const result = await response.json();
 
             if (result.success) {
-                document.getElementById('registeredCompanyName').value = result.data.registered_company_name;
-                document.getElementById('tradingAs').value = result.data.trading_as;
-                document.getElementById('physicalAddress').value = result.data.physical_address;
-                document.getElementById('telephoneNumber').value = result.data.telephone_number;
-                document.getElementById('financeContactPerson').value = result.data.finance_contact_person;
-                document.getElementById('financeEmailAddress').value = result.data.finance_email_address;
-                document.getElementById('vatNumber').value = result.data.vat_number;
+                document.getElementById('registeredCompanyName1').value = result.data.registered_company_name;
+                document.getElementById('tradingAs1').value = result.data.trading_as;
+                document.getElementById('physicalAddress1').value = result.data.physical_address;
+                document.getElementById('telephoneNumber1').value = result.data.telephone_number;
+                document.getElementById('financeContactPerson1').value = result.data.finance_contact_person;
+                document.getElementById('financeEmailAddress1').value = result.data.finance_email_address;
+                document.getElementById('vatNumber1').value = result.data.vat_number;
             } else {
-                console.error('Failed to fetch company details:', result.message);
+                console.error('Failed to fetch company 1 details:', result.message);
             }
         } catch (error) {
-            console.error('Error fetching company details:', error);
+            console.error('Error fetching company 1 details:', error);
         }
     }
 
-    // Call this when the page loads
-    fetchCompanyDetails();
+    // Fetch and populate company 2 details
+    async function fetchCompany2Details() {
+        try {
+            const response = await fetch('/api/company-details?companyId=2');
+            const result = await response.json();
 
-    // Handle form submission and update company details
-    document.getElementById('companyDetailsForm').addEventListener('submit', async function(event) {
+            if (result.success) {
+                document.getElementById('registeredCompanyName2').value = result.data.registered_company_name;
+                document.getElementById('tradingAs2').value = result.data.trading_as;
+                document.getElementById('physicalAddress2').value = result.data.physical_address;
+                document.getElementById('telephoneNumber2').value = result.data.telephone_number;
+                document.getElementById('financeContactPerson2').value = result.data.finance_contact_person;
+                document.getElementById('financeEmailAddress2').value = result.data.finance_email_address;
+                document.getElementById('vatNumber2').value = result.data.vat_number;
+            } else {
+                console.error('Failed to fetch company 2 details:', result.message);
+            }
+        } catch (error) {
+            console.error('Error fetching company 2 details:', error);
+        }
+    }
+
+    // Handle form submission for Company 1
+    document.getElementById('companyDetailsForm1').addEventListener('submit', async function(event) {
         event.preventDefault();
 
         const companyDetails = {
-            registered_company_name: document.getElementById('registeredCompanyName').value,
-            trading_as: document.getElementById('tradingAs').value,
-            physical_address: document.getElementById('physicalAddress').value,
-            telephone_number: document.getElementById('telephoneNumber').value,
-            finance_contact_person: document.getElementById('financeContactPerson').value,
-            finance_email_address: document.getElementById('financeEmailAddress').value,
-            vat_number: document.getElementById('vatNumber').value
+            company_id: 1,  // Set company_id to 1
+            registered_company_name: document.getElementById('registeredCompanyName1').value,
+            trading_as: document.getElementById('tradingAs1').value,
+            physical_address: document.getElementById('physicalAddress1').value,
+            telephone_number: document.getElementById('telephoneNumber1').value,
+            finance_contact_person: document.getElementById('financeContactPerson1').value,
+            finance_email_address: document.getElementById('financeEmailAddress1').value,
+            vat_number: document.getElementById('vatNumber1').value
         };
 
         try {
@@ -292,18 +382,54 @@
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(companyDetails),
+                body: JSON.stringify(companyDetails),  // Send the details along with company_id
             });
 
             const result = await response.json();
             if (result.success) {
-                showMessage('Company details updated successfully!');
+                showMessage('Company 1 details updated successfully!');
             } else {
-                showErrorMessage('An error occurred while updating the details.');
+                showErrorMessage('An error occurred while updating company 1 details.');
             }
         } catch (error) {
-            showErrorMessage('An error occurred while updating the details.');
-            console.error('Error updating company details:', error);
+            showErrorMessage('An error occurred while updating company 1 details.');
+            console.error('Error updating company 1 details:', error);
+        }
+    });
+
+    // Handle form submission for Company 2
+    document.getElementById('companyDetailsForm2').addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        const companyDetails = {
+            company_id: 2,  // Set company_id to 2
+            registered_company_name: document.getElementById('registeredCompanyName2').value,
+            trading_as: document.getElementById('tradingAs2').value,
+            physical_address: document.getElementById('physicalAddress2').value,
+            telephone_number: document.getElementById('telephoneNumber2').value,
+            finance_contact_person: document.getElementById('financeContactPerson2').value,
+            finance_email_address: document.getElementById('financeEmailAddress2').value,
+            vat_number: document.getElementById('vatNumber2').value
+        };
+
+        try {
+            const response = await fetch('/financials/company-details/edit', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(companyDetails),  // Send the details along with company_id
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                showMessage('Company 2 details updated successfully!');
+            } else {
+                showErrorMessage('An error occurred while updating company 2 details.');
+            }
+        } catch (error) {
+            showErrorMessage('An error occurred while updating company 2 details.');
+            console.error('Error updating company 2 details:', error);
         }
     });
 
@@ -324,7 +450,12 @@
             messageElement.style.display = 'none';
         }, 3000);
     }
+
+    // Load company details on page load
+    fetchCompany1Details();
+    fetchCompany2Details();
 </script>
+
 
 </body>
 </html>

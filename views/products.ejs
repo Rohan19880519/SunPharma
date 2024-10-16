@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Products</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        body {
+            font-family: 'Century Gothic', sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navbar styles */
+        .navbar {
+            background-color: #7b8b9c; /* Navbar background color */
+            position: fixed; /* Fixes the navbar at the top */
+            top: 0; /* Positions it at the very top */
+            width: 98%; /* Full width */
+            z-index: 1000; /* Stacks it above other elements */
+            display: flex; /* Uses flexbox for layout */
+            justify-content: space-between; /* Spaces items evenly */
+            align-items: center; /* Vertically centers items */
+            padding: 10px 20px; /* Padding inside the navbar */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds shadow */
+        }
+
+        .navbar ul {
+            list-style-type: none; /* Removes bullet points */
+            margin: 0;
+            padding: 0;
+            display: flex; /* Displays list items horizontally */
+            gap: 5px; /* Space between menu items */
+        }
+
+        .navbar ul li {
+            position: relative; /* For positioning dropdowns */
+        }
+
+        .navbar ul li a {
+            display: block; /* Makes the link fill the list item */
+            padding: 8px 12px; /* Padding around the link */
+            color: #ecf0f1; /* Link text color */
+            text-decoration: none; /* Removes underline */
+            font-weight: normal; /* Normal font weight (not bold) */
+            transition: background-color 0.3s ease; /* Smooth hover effect */
+        }
+
+        .navbar ul li a:hover {
+            background-color: #e27618; /* Background on hover */
+            border-radius: 5px; /* Rounds the corners */
+        }
+
+        .navbar ul li a.active {
+            background-color: #7b8b9c; /* Active link background */
+            color: #ffffff; /* Active link text color */
+        }
+
+        /* Dropdown styles */
+        .dropdown {
+            display: none;
+            position: absolute;
+            background-color: #7b8b9c;
+            min-width: 160px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+            top: 100%; /* Position the dropdown below the parent */
+            left: 0;   /* Align it to the left of the parent */
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .navbar ul li:hover .dropdown,
+        .navbar ul li:focus-within .dropdown {
+            display: block;
+            opacity: 1;
+        }
+
+        .dropdown a {
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            color: #ffffff;
+            text-align: left;
+        }
+
+        .dropdown a:hover {
+            background-color: #e27618;
+        }
+
+        /* Logo styles */
+        .navbar .logo img {
+            height: 40px;
+            width: auto;
+        }
+
+        /* Main content styles */
+        .content {
+            margin-top: 100px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #7b8b9c;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        /* Compact Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 8px 10px; /* Reduced padding for a more compact look */
+            text-align: left;
+        }
+
+        th {
+            background-color: #7b8b9c;
+            color: #ffffff;
+            font-size: 0.9rem; /* Slightly smaller font for the header */
+        }
+
+        td {
+            font-size: 0.85rem; /* Smaller font for table content */
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        /* Checkbox and dropdown styles */
+        input[type="checkbox"] {
+            margin-right: 5px;
+        }
+
+        select {
+            padding: 5px; /* Reduced padding for the select dropdown */
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 0.85rem;
+        }
+
+        /* Button styles */
+        button {
+            padding: 8px 15px; /* Smaller padding for buttons */
+            background-color: #7ed957;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85rem; /* Reduced font size for buttons */
+        }
+
+        button:hover {
+            background-color: #66c945;
+        }
+
+        .delete-btn {
+            background-color: #f44336;
+            padding: 8px 15px; /* Smaller padding */
+        }
+
+        .delete-btn:hover {
+            background-color: #e63929;
+        }
+
+        /* Orange Add New Button styles */
+        .add-new-btn {
+            background-color: #e67e22;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            float: right;
+            margin-bottom: 20px;
+        }
+
+        .add-new-btn:hover {
+            background-color: #d35400;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 40%;
+            text-align: left;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: #7b8b9c;
+        }
+
+        .close {
+            font-size: 30px;
+            font-weight: bold;
+            color: #aaaaaa;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <a href="/home" class="logo">
+        <img src="/assets/logo.png" alt="Company Logo">
+    </a>
+    <ul>
+        <li><a href="/home">Home</a></li>
+        <li>
+            <a href="/customers">Customers</a>
+            <ul class="dropdown">
+                <li><a href="/customers/groups">Groups</a></li>
+                <li><a href="/customers/wholesalers">Wholesalers</a></li>
+            </ul>
+        </li>
+        <li><a href="/sales">Sales</a>
+            <ul class="dropdown">
+                <li><a href="/sales/products">Products</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="/financials">Financials</a>
+            <ul class="dropdown">
+                <li><a href="/financials/tiers">Tiers</a></li>
+                <li><a href="/financials/adhoc">Ad-Hoc</a></li>
+                <li><a href="/financials/targets">Targets</a></li>
+                <li><a href="/financials/tax-invoices">Tax Invoices</a></li>
+                <li><a href="/financials/company-details">Company Details</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="/representatives">Representatives</a>
+            <ul class="dropdown">
+                <li><a href="/representatives/targets">Representative Targets</a></li>
+                <li><a href="/representatives/request-funds">Request For Funds</a></li>
+                <li><a href="/representatives/rsm">RSM's</a></li>
+            </ul>
+        </li>
+        <li><a href="/logout">Logout</a></li>
+    </ul>
+</nav>
+
+<!-- Main content -->
+<div class="content">
+    <h1>Sales Products</h1>
+
+    <!-- Upload XLSX Form -->
+    <h2>Upload Products via XLSX</h2>
+    <form action="/sales/products/upload" method="POST" enctype="multipart/form-data">
+        <label for="xlsxFile">Upload XLSX File</label>
+        <input type="file" name="xlsxFile" id="xlsxFile" accept=".xlsx" required>
+        <button type="submit">Upload</button>
+    </form>
+
+    <!-- Add Product Button -->
+    <button class="add-new-btn" id="openModalBtn">Add New Product</button>
+
+    <!-- Product List Table -->
+    <table>
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Nappi Code</th>
+                <th>Price excl VAT</th>
+                <th>Ranbaxy Product</th>
+                <th>Sun Pharma Product</th>
+                <th>Basket</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        <% if (products && products.length > 0) { %>
+            <% products.forEach(product => { %>
+            <tr>
+                <td><%= product.ProductName %></td>
+                <td><%= product.NappiCode %></td>
+                <td>R <%= product.PriceExclVAT %></td>
+                
+                <!-- Form to handle checkbox and dropdown changes -->
+                <form action="/sales/products/update/<%= product.ProductID %>" method="POST">
+                    <td>
+                        <input type="checkbox" name="isRanbaxy" value="1" <%= product.IsRanbaxyProduct ? 'checked' : '' %> onchange="this.form.submit()" />
+                    </td>
+                    <td>
+                        <input type="checkbox" name="isSunPharma" value="1" <%= product.IsSunPharmaProduct ? 'checked' : '' %> onchange="this.form.submit()" />
+                    </td>
+                    <td>
+                        <select name="basket" onchange="this.form.submit()">
+                            <option value="B1" <%= product.Basket === 'B1' ? 'selected' : '' %>>B1</option>
+                            <option value="B2" <%= product.Basket === 'B2' ? 'selected' : '' %>>B2</option>
+                            <option value="B3" <%= product.Basket === 'B3' ? 'selected' : '' %>>B3</option>
+                            <option value="B4" <%= product.Basket === 'B4' ? 'selected' : '' %>>B4</option>
+                            <option value="B5" <%= product.Basket === 'B5' ? 'selected' : '' %>>B5</option>
+                            <option value="B6" <%= product.Basket === 'B6' ? 'selected' : '' %>>B6</option>
+                            <option value="B7" <%= product.Basket === 'B7' ? 'selected' : '' %>>B7</option>
+                            <option value="B8" <%= product.Basket === 'B8' ? 'selected' : '' %>>B8</option>
+                        </select>
+                    </td>
+                </form>
+
+                <td>
+                    <form action="/sales/products/delete/<%= product.ProductID %>" method="POST">
+                        <button type="submit" class="delete-btn">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            <% }) %>
+        <% } else { %>
+            <tr>
+                <td colspan="7">No products found</td>
+            </tr>
+        <% } %>
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal for Add New Product -->
+<div id="addProductModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Add a New Product</h2>
+            <span class="close" id="closeModalBtn">&times;</span>
+        </div>
+        <form action="/sales/products/add" method="POST">
+            <label for="productName">Product Name</label>
+            <input type="text" id="productName" name="productName" placeholder="Product Name" required>
+
+            <label for="nappiCode">Nappi Code</label>
+            <input type="text" id="nappiCode" name="nappiCode" placeholder="Nappi Code" required>
+
+            <label for="priceExclVAT">Price excl VAT</label>
+            <input type="number" id="priceExclVAT" name="priceExclVAT" placeholder="Price excl VAT" step="0.01" required>
+
+            <label><input type="checkbox" name="isRanbaxy"> Ranbaxy Product</label>
+            <label><input type="checkbox" name="isSunPharma"> Sun Pharma Product</label>
+
+            <label for="basket">Basket</label>
+            <select name="basket" id="basket" required>
+                <option value="B1">B1</option>
+                <option value="B2">B2</option>
+                <option value="B3">B3</option>
+                <option value="B4">B4</option>
+                <option value="B5">B5</option>
+                <option value="B6">B6</option>
+                <option value="B7">B7</option>
+                <option value="B8">B8</option>
+            </select>
+
+            <button type="submit">Add Product</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Modal functionality
+    const modal = document.getElementById("addProductModal");
+    const openModalBtn = document.getElementById("openModalBtn");
+    const closeModalBtn = document.getElementById("closeModalBtn");
+
+    openModalBtn.onclick = function() {
+        modal.style.display = "block";
+    };
+
+    closeModalBtn.onclick = function() {
+        modal.style.display = "none";
+    };
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    };
+</script>
+
+</body>
+</html>

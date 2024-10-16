@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
@@ -9,7 +10,8 @@ const homeRoutes = require('./routes/homeRoutes');
 const customerRoutes = require('./routes/customerRoutes');
 const salesRoutes = require('./routes/salesRoutes'); 
 const taxInvoiceRoutes = require('./routes/taxInvoiceRoutes');
-
+const requestFundsRoutes = require('./routes/requestFundsRoutes');
+const productsRouter = require('./routes/products');
 
 const app = express();
 
@@ -38,13 +40,17 @@ app.use(session({
     cookie: { secure: false }
 }));
 
-// Register routes
+
+// Register routesn
 app.use(authRoutes);
 app.use(homeRoutes);
 app.use(customerRoutes);
 app.use('/customers', customerRoutes);
 app.use('/sales', salesRoutes);  // Correctly register the sales route
-app.use('/financials/tax-invoices', taxInvoiceRoutes);
+app.use('/financials/tax-invoices', taxInvoiceRoutes);  // Register tax invoice routes only once
+app.use('/auth', authRoutes);
+app.use(requestFundsRoutes); // Register the new Request Funds routes
+app.use('/sales', productsRouter);
 
 
 // Serve static files
@@ -58,6 +64,11 @@ app.get('/', (req, res) => {
 // Route to serve login page
 app.get('/login', (req, res) => {
     res.sendFile(__dirname + '/views/login.html');
+});
+
+// Signup route
+app.get('/signup', (req, res) => {
+    res.sendFile(__dirname + '/public/signup.html'); // Adjust the path to your signup page
 });
 
 // Serve the home page after successful login

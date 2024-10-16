@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const { sql, poolPromise } = require('../config/dbConfig');
+
 
 // Home page route (GET /home)
 router.get('/home', (req, res) => {

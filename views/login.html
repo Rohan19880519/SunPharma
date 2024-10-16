@@ -86,6 +86,74 @@
     .links a:hover {
       text-decoration: underline;
     }
+
+    /* Error Message Styling */
+    .error-message {
+      color: #ff0000;
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+
+    /* Modal styling */
+    .modal {
+      display: none; /* Hidden by default */
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #ffffff;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      z-index: 1000;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    .modal-header {
+      font-size: 20px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .modal-close {
+      float: right;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: none; /* Hidden by default */
+      z-index: 900;
+    }
+
+    /* Adjust modal input fields and buttons */
+    .modal input[type="text"], .modal input[type="email"], .modal input[type="password"], .modal button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #7a716b;
+      box-sizing: border-box;
+    }
+
+    .modal button {
+      background-color: #7a716b;
+      color: #ffffff;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+    }
+
+    .modal button:hover {
+      background-color: #060404;
+    }
   </style>
 </head>
 <body>
@@ -97,17 +165,89 @@
 
   <!-- Login container -->
   <div class="login-container">
-    <form action="/login" method="POST">
+    <form action="/auth/login" method="POST">
       <h1>Login</h1>
       <input type="text" name="username" placeholder="Username" required>
       <input type="password" name="password" placeholder="Password" required>
       <button type="submit">Login</button>
       <div class="links">
-        <a href="#">Forgot Password</a>
-        <a href="#">Sign Up</a>
+        <a href="#" id="forgotPasswordLink">Forgot Password</a>
+        <a href="#" id="signUpLink">Sign Up</a>
       </div>
     </form>
   </div>
+
+	<!-- Forgot Password Modal -->
+	<div class="modal-overlay" id="modalOverlay"></div>
+	<div class="modal" id="forgotPasswordModal">
+		<div class="modal-header">
+			Forgot Password
+			<span class="modal-close" id="closeForgotPasswordModal">&times;</span>
+		</div>
+		<form action="/auth/reset-password" method="POST">
+			<input type="email" name="email" placeholder="Enter your email" required>
+			<input type="password" name="newPassword" placeholder="Enter new password" required>
+			<button type="submit">Reset Password</button>
+		</form>
+	</div>
+
+
+  <!-- Sign Up Modal -->
+  <div class="modal" id="signUpModal">
+    <div class="modal-header">
+      Sign Up
+      <span class="modal-close" id="closeSignUpModal">&times;</span>
+    </div>
+    <form action="/register" method="POST">
+      <input type="text" name="username" placeholder="Username" required>
+      <input type="email" name="email" placeholder="Email" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <input type="password" name="confirmPassword" placeholder="Confirm Password" required>
+      <button type="submit">Sign Up</button>
+    </form>
+  </div>
+
+  <script>
+    // Get modal elements
+    const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+    const signUpLink = document.getElementById('signUpLink');
+    const forgotPasswordModal = document.getElementById('forgotPasswordModal');
+    const signUpModal = document.getElementById('signUpModal');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const closeForgotPasswordModal = document.getElementById('closeForgotPasswordModal');
+    const closeSignUpModal = document.getElementById('closeSignUpModal');
+
+    // Open Forgot Password Modal
+    forgotPasswordLink.addEventListener('click', () => {
+      modalOverlay.style.display = 'block';
+      forgotPasswordModal.style.display = 'block';
+    });
+
+    // Open Sign Up Modal
+    signUpLink.addEventListener('click', () => {
+      modalOverlay.style.display = 'block';
+      signUpModal.style.display = 'block';
+    });
+
+    // Close Forgot Password Modal
+    closeForgotPasswordModal.addEventListener('click', () => {
+      modalOverlay.style.display = 'none';
+      forgotPasswordModal.style.display = 'none';
+    });
+
+    // Close Sign Up Modal
+    closeSignUpModal.addEventListener('click', () => {
+      modalOverlay.style.display = 'none';
+      signUpModal.style.display = 'none';
+    });
+
+    // Close modals when clicking outside of them
+    modalOverlay.addEventListener('click', () => {
+      modalOverlay.style.display = 'none';
+      forgotPasswordModal.style.display = 'none';
+      signUpModal.style.display = 'none';
+    });
+  </script>
 
 </body>
 </html>

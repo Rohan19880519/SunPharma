@@ -210,7 +210,11 @@
                 <li><a href="/customers/wholesalers">Wholesalers</a></li>
             </ul>
         </li>
-        <li><a href="/sales">Sales</a></li>
+        <li><a href="/sales">Sales</a>
+            <ul class="dropdown">
+                <li><a href="/sales/products">Products</a></li> <!-- New Page Link -->
+            </ul>
+        </li>
         <li>
             <a href="/financials">Financials</a>
             <ul class="dropdown">
@@ -219,6 +223,14 @@
                 <li><a href="/financials/targets">Targets</a></li>
                 <li><a href="/financials/tax-invoices">Tax Invoices</a></li>
                 <li><a href="/financials/company-details">Company Details</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="/representatives">Representatives</a>
+            <ul class="dropdown">
+                <li><a href="/representatives/targets">Representative Targets</a></li>
+                <li><a href="/representatives/request-funds">Request For Funds</a></li>
+                <li><a href="/representatives/rsm">RSM's</a></li>
             </ul>
         </li>
         <li><a href="/logout">Logout</a></li>
@@ -237,7 +249,13 @@
     <form action="/financials/tax-invoices/generate-invoice" method="POST">
         <label for="customerId">Customer:</label>
         <select name="customerId" id="customerId">
-            <!-- Populate customer list from backend -->
+            <% if (customers && customers.length > 0) { %>
+                <% customers.forEach(customer => { %>
+                    <option value="<%= customer.customerId %>"><%= customer.customerName %></option>
+                <% }); %>
+            <% } else { %>
+                <option value="">No customers available</option>
+            <% } %>
         </select>
 
         <label for="startDate">Start Date:</label>
@@ -251,18 +269,38 @@
 
     <!-- Invoices Table -->
     <table id="invoicesTable">
-        <thead>
+      <thead>
+        <tr>
+          <th>Invoice Number</th>
+          <th>Customer Name</th>
+          <th>Invoice Date</th>
+          <th>Total Amount</th>
+          <th>Rep Name</th>
+          <th>Download PDF</th>
+        </tr>
+      </thead>
+<tbody id="invoicesTableBody">
+    <% if (invoices && invoices.length > 0) { %>
+        <% invoices.forEach(invoice => { %>
             <tr>
-                <th>Invoice Number</th>
-                <th>Customer Name</th>
-                <th>Invoice Date</th>
-                <th>Total Amount</th>
-                <th>Rep Name</th>
-                <th>Download PDF</th>
+                <td><%= invoice.InvoiceNumber %></td>
+                <td><%= invoice.CustomerName %></td>
+                <td><%= new Date(invoice.InvoiceDate).toLocaleDateString() %></td>
+                <!-- Safely handle TotalAmount to avoid calling toFixed on null or undefined -->
+                <td><%= invoice.TotalAmount != null ? invoice.TotalAmount.toFixed(2) : 'N/A' %></td>
+                <td><%= invoice.RepName %></td>
+                <td><a href="/financials/tax-invoices/download-invoice/<%= invoice.InvoiceId %>" target="_blank">Download PDF</a></td>
             </tr>
-        </thead>
-        <tbody id="invoicesTableBody">
-        </tbody>
+        <% }); %>
+    <% } else { %>
+        <tr>
+            <td colspan="6">No invoices found</td>
+        </tr>
+    <% } %>
+</tbody>
+
+
+
     </table>
 
     <!-- Loading Spinner -->
@@ -272,69 +310,5 @@
     </div>
 </div>
 
-<script>
-    let currentPage = 1;
-    const pageSize = 10;
-    let loading = false;
-    let reachedEnd = false;
-    let allInvoices = [];
-
-    // Fetch and load more invoices with pagination
-    async function loadMoreInvoices() {
-        if (loading || reachedEnd) return;
-        loading = true;
-        document.getElementById('loading').style.display = 'block';
-
-        try {
-            const response = await fetch(`/financials/tax-invoices/list?page=${currentPage}&size=${pageSize}`);
-            const result = await response.json();
-
-            console.log(result);  // Log result to see if data is coming through
-
-            if (result.success) {
-                const invoices = result.data;
-                allInvoices = [...allInvoices, ...invoices];
-                appendInvoicesToTable(invoices);
-
-                if (invoices.length < pageSize) {
-                    reachedEnd = true;
-                    document.getElementById('loading').style.display = 'none';
-                }
-
-                currentPage++;
-                loading = false;
-                document.getElementById('loading').style.display = 'none';
-            } else {
-                console.error('Failed to fetch invoices:', result.message);
-                document.getElementById('loading').style.display = 'none';
-            }
-        } catch (error) {
-            console.error('Error fetching invoices:', error);
-            document.getElementById('loading').style.display = 'none';
-        }
-    }
-
-    // Append invoices to the table
-    function appendInvoicesToTable(invoices) {
-        const tableBody = document.getElementById('invoicesTableBody');
-        const rowsFragment = document.createDocumentFragment();
-
-        invoices.forEach(invoice => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${invoice.InvoiceNumber}</td>
-                <td>${invoice.CustomerName}</td>
-                <td>${invoice.InvoiceDate}</td>
-                <td>${invoice.TotalAmount}</td>
-                <td>${invoice.RepName}</td>
-                <td><a href="/download-invoice/${invoice.InvoiceId}">Download PDF</a></td>
-            `;
-            rowsFragment.appendChild(row);
-        });
-
-        tableBody.appendChild(rowsFragment);
-    }
-
-    // Initial load
-    loadMoreInvoices();
-</script>
+</body>
+</html>
