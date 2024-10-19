@@ -14,6 +14,7 @@ const requestFundsRoutes = require('./routes/requestFundsRoutes');
 const productsRouter = require('./routes/products');
 
 const app = express();
+const token = require('crypto').randomBytes(48).toString('hex');
 
 // Middleware
 app.use(bodyParser.json({ limit: '50mb' }));
@@ -34,7 +35,7 @@ app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 // Middleware to handle sessions
 app.use(session({
-    secret: 'yourSecretKey',
+    secret: token,
     resave: false,
     saveUninitialized: true,
     cookie: { secure: false }
