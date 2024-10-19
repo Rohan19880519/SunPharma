@@ -56,7 +56,7 @@ router.get('/products', async (req, res) => {
         res.render('products', { products: result.recordset });  // Pass the products to the EJS template
     } catch (err) {
         console.error('Error fetching products:', err);
-        res.status(500).send('Error fetching products');
+        res.status(INTERNAL_SERVER_ERROR).send('Error fetching products');
     }
 });
 
@@ -80,7 +80,7 @@ router.post('/products/add', async (req, res) => {
         res.redirect('/sales/products');  // Redirect to fetch and display updated list
     } catch (err) {
         console.error('Error adding product:', err);
-        res.status(500).send('Error adding product');
+        res.status(INTERNAL_SERVER_ERROR).send('Error adding product');
     }
 });
 
@@ -95,7 +95,7 @@ router.post('/products/delete/:id', async (req, res) => {
         res.redirect('/sales/products');  // Redirect to refresh the product list
     } catch (err) {
         console.error('Error deleting product:', err);
-        res.status(500).send('Error deleting product');
+        res.status(INTERNAL_SERVER_ERROR).send('Error deleting product');
     }
 });
 
@@ -142,7 +142,7 @@ router.post('/products/upload', upload.single('xlsxFile'), async (req, res) => {
         res.redirect('/sales/products');
     } catch (err) {
         console.error('Error processing XLSX file:', err);
-        res.status(500).send('Error processing XLSX file');
+        res.status(INTERNAL_SERVER_ERROR).send('Error processing XLSX file');
     }
 });
 
@@ -173,7 +173,7 @@ router.post('/products/update/:id', async (req, res) => {
         res.redirect('/sales/products');  // Redirect back to the product list
     } catch (err) {
         console.error('Error updating product:', err);
-        res.status(500).send('Error updating product');
+        res.status(INTERNAL_SERVER_ERROR).send('Error updating product');
     }
 });
 

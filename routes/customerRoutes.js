@@ -26,7 +26,7 @@ router.post('/update-slider', async (req, res) => {
         res.json({ success: true });
     } catch (error) {
         console.error('Error updating slider:', error);
-        res.status(500).json({ success: false, error: 'Server error' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, error: 'Server error' });
     }
 });
 
@@ -124,7 +124,7 @@ router.post('/customers/edit', async (req, res) => {
         res.redirect('/customers'); // Redirect back to the customers list
     } catch (err) {
         console.error('Error updating customer:', err);
-        res.status(500).send('Server Error');
+        res.status(INTERNAL_SERVER_ERROR).send('Server Error');
     }
 });
 
@@ -134,11 +134,11 @@ router.post('/upload-associated-stores', upload.single('associatedStoresFile'), 
     const file = req.file;
 
     if (!customerId) {
-        return res.status(400).json({ success: false, message: 'customerId is required.' });
+        return res.status(BAD_REQUEST).json({ success: false, message: 'customerId is required.' });
     }
 
     if (!file) {
-        return res.status(400).json({ success: false, message: 'No file uploaded' });
+        return res.status(BAD_REQUEST).json({ success: false, message: 'No file uploaded' });
     }
 
     try {
@@ -166,7 +166,7 @@ router.post('/upload-associated-stores', upload.single('associatedStoresFile'), 
         res.json({ success: true });
     } catch (error) {
         console.error('Error processing file:', error);
-        res.status(500).json({ success: false, message: 'Error processing file' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Error processing file' });
     }
 });
 
@@ -187,7 +187,7 @@ router.get('/customers/:customerId/sub-customers', async (req, res) => {
         res.json({ subCustomers: associatedCustomers });
     } catch (error) {
         console.error('Error fetching sub-customers:', error);
-        res.status(500).json({ success: false, message: 'Error fetching sub-customers' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Error fetching sub-customers' });
     }
 });
 
@@ -260,7 +260,7 @@ router.get('/groups', async (req, res) => {
         });
     } catch (error) {
         console.error('Error fetching customer groups:', error);
-        res.status(500).json({ success: false, message: 'Error fetching customer groups' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Error fetching customer groups' });
     }
 });
 
@@ -281,7 +281,7 @@ router.post('/groups/delete', async (req, res) => {
         res.json({ success: true, message: 'Sub-customer deleted successfully' });
     } catch (error) {
         console.error('Error deleting sub-customer:', error);
-        res.status(500).json({ success: false, message: 'Error deleting sub-customer' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Error deleting sub-customer' });
     }
 });
 
@@ -306,7 +306,7 @@ router.post('/customers/groups/edit', async (req, res) => {
         res.json({ success: true, message: 'Sub-customer updated successfully' });
     } catch (error) {
         console.error('Error updating sub-customer:', error);
-        res.status(500).json({ success: false, message: 'Error updating sub-customer' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Error updating sub-customer' });
     }
 });
 
@@ -331,7 +331,7 @@ router.get('/edit/:customerName', async (req, res) => {
         const customer = result.recordset[0];
 
         if (!customer) {
-            return res.status(404).send('Customer not found');
+            return res.status(NOT_FOUND).send('Customer not found');
         }
 
         // Render the edit form and pass the customer data to the view
@@ -339,7 +339,7 @@ router.get('/edit/:customerName', async (req, res) => {
 
     } catch (error) {
         console.error('Error fetching customer details:', error);
-        res.status(500).send('Server error');
+        res.status(INTERNAL_SERVER_ERROR).send('Server error');
     }
 });
 
@@ -372,7 +372,7 @@ router.post('/edit/:customerName', async (req, res) => {
 
     } catch (error) {
         console.error('Error updating customer details:', error);
-        res.status(500).send('Server error');
+        res.status(INTERNAL_SERVER_ERROR).send('Server error');
     }
 });
 
@@ -394,7 +394,7 @@ router.get('/edit/sub-customer/:subCustomerId', async (req, res) => {
         const customer = result.recordset[0];
 
         if (!customer) {
-            return res.status(404).send('Customer not found');
+            return res.status(NOT_FOUND).send('Customer not found');
         }
 
         // Render the edit form and pass the customer data to the view
@@ -402,7 +402,7 @@ router.get('/edit/sub-customer/:subCustomerId', async (req, res) => {
 
     } catch (error) {
         console.error('Error fetching customer details:', error);
-        res.status(500).send('Server error');
+        res.status(INTERNAL_SERVER_ERROR).send('Server error');
     }
 });
 
@@ -424,7 +424,7 @@ router.get('/edit/main-customer/:customerName', async (req, res) => {
         const customer = result.recordset[0];
 
         if (!customer) {
-            return res.status(404).send('Customer not found');
+            return res.status(NOT_FOUND).send('Customer not found');
         }
 
         // Render the edit form and pass the customer data to the view
@@ -432,7 +432,7 @@ router.get('/edit/main-customer/:customerName', async (req, res) => {
 
     } catch (error) {
         console.error('Error fetching customer details:', error);
-        res.status(500).send('Server error');
+        res.status(INTERNAL_SERVER_ERROR).send('Server error');
     }
 });
 
@@ -445,7 +445,7 @@ router.post('/customers/updateSubCustomer', async (req, res) => {
 
         // Validate that all inputs are present
         if (!parentCustomerId || !subCustomerId || !newSubCustomerId) {
-            return res.status(400).json({ success: false, message: 'Invalid data provided.' });
+            return res.status(BAD_REQUEST).json({ success: false, message: 'Invalid data provided.' });
         }
 
         // Update the subCustomerId for the specified parentCustomerId
@@ -462,7 +462,7 @@ router.post('/customers/updateSubCustomer', async (req, res) => {
         res.json({ success: true, message: 'Sub-customer updated successfully' });
     } catch (error) {
         console.error('Error updating sub-customer:', error);
-        res.status(500).json({ success: false, message: 'Error updating sub-customer' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Error updating sub-customer' });
     }
 });
 
@@ -482,7 +482,7 @@ router.get('/customers/wholesalers', async (req, res) => {
         res.render('customerWholesaler', { wholesalers: result.recordset });
     } catch (error) {
         console.error('Error fetching wholesalers:', error);
-        res.status(500).json({ success: false, message: 'Error fetching wholesalers' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Error fetching wholesalers' });
     }
 });
 
@@ -508,7 +508,7 @@ router.post('/wholesalers/edit', async (req, res) => {
         res.json({ success: true, message: 'Wholesaler updated successfully!' });
     } catch (error) {
         console.error('Error updating wholesaler:', error);
-        res.status(500).json({ success: false, message: 'Error updating wholesaler' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Error updating wholesaler' });
     }
 });
 
@@ -526,7 +526,7 @@ router.post('/wholesalers/delete', async (req, res) => {
         res.json({ success: true, message: 'Wholesaler deleted successfully!' });
     } catch (error) {
         console.error('Error deleting wholesaler:', error);
-        res.status(500).json({ success: false, message: 'Error deleting wholesaler' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Error deleting wholesaler' });
     }
 });
 
@@ -535,7 +535,7 @@ router.post('/upload-wholesalers', upload.single('file'), async (req, res) => {
     const file = req.file;
 
     if (!file) {
-        return res.status(400).json({ success: false, message: 'No file uploaded.' });
+        return res.status(BAD_REQUEST).json({ success: false, message: 'No file uploaded.' });
     }
 
     try {
@@ -577,7 +577,7 @@ router.post('/upload-wholesalers', upload.single('file'), async (req, res) => {
         res.json({ success: true, message: 'Wholesaler data uploaded successfully' });
     } catch (error) {
         console.error('Error processing XLSX file:', error);
-        res.status(500).json({ success: false, message: 'Error processing file.' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Error processing file.' });
     }
 });
 
@@ -594,7 +594,7 @@ router.post('/customers/wholesalers/update-slider', async (req, res) => {
         res.json({ success: true });
     } catch (error) {
         console.error('Error updating fees status:', error);
-        res.status(500).json({ success: false, message: 'Error updating fees status.' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Error updating fees status.' });
     }
 });
 
@@ -616,7 +616,7 @@ router.get('/financials/tiers', async (req, res) => {
         res.render('tiers', { tiers: result.recordset });
     } catch (error) {
         console.error('Error fetching tiers:', error);
-        res.status(500).json({ success: false, message: 'Error fetching tiers.' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Error fetching tiers.' });
     }
 });
 
@@ -642,7 +642,7 @@ router.post('/financials/tiers/add', async (req, res) => {
         res.redirect('/financials/tiers');
     } catch (error) {
         console.error('Error adding new tier:', error);
-        res.status(500).json({ success: false, message: 'Error adding new tier.' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Error adding new tier.' });
     }
 });
 
@@ -665,10 +665,10 @@ router.post('/financials/tiers/edit/:id', async (req, res) => {
             `);
 
         // Explicitly send a success response
-        res.status(200).json({ success: true, message: 'Tier updated successfully!' });
+        res.status(SUCCESS).json({ success: true, message: 'Tier updated successfully!' });
     } catch (error) {
         console.error('Error updating tier:', error);
-        res.status(500).json({ success: false, message: 'Error updating tier.' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Error updating tier.' });
     }
 });
 
@@ -686,7 +686,7 @@ router.post('/financials/tiers/delete/:id', async (req, res) => {
         res.redirect('/financials/tiers');
     } catch (error) {
         console.error('Error deleting tier:', error);
-        res.status(500).json({ success: false, message: 'Error deleting tier.' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Error deleting tier.' });
     }
 });
 
@@ -704,7 +704,7 @@ router.post('/financials/tiers/delete/:id', async (req, res) => {
         res.json({ success: true, message: 'Tier deleted successfully!' });
     } catch (error) {
         console.error('Error deleting tier:', error);
-        res.status(500).json({ success: false, message: 'Error deleting tier.' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Error deleting tier.' });
     }
 });
 
@@ -726,7 +726,7 @@ router.post('/financials/tiers/add', async (req, res) => {
         res.json({ success: true, message: 'Tier added successfully!' });
     } catch (error) {
         console.error('Error adding new tier:', error);
-        res.status(500).json({ success: false, message: 'Error adding new tier.' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Error adding new tier.' });
     }
 });
 
@@ -744,7 +744,7 @@ router.get('/financials/adhoc', async (req, res) => {
         res.render('adhoc', { adhocFees: result.recordset });
     } catch (error) {
         console.error('Error fetching adhoc fees:', error);
-        res.status(500).json({ success: false, message: 'Error fetching adhoc fees.' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Error fetching adhoc fees.' });
     }
 });
 
@@ -767,7 +767,7 @@ router.post('/financials/adhoc/add', async (req, res) => {
         res.json({ success: true, message: 'Ad-Hoc Fee added successfully' });
     } catch (error) {
         console.error('Error adding Ad-Hoc Fee:', error);
-        res.status(500).json({ success: false, message: 'Failed to add Ad-Hoc Fee' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Failed to add Ad-Hoc Fee' });
     }
 });
 
@@ -791,7 +791,7 @@ router.post('/financials/adhoc/edit/:id', async (req, res) => {
         res.json({ success: true });
     } catch (error) {
         console.error('Error editing adhoc fee:', error);
-        res.status(500).json({ success: false, message: 'Error editing adhoc fee.' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Error editing adhoc fee.' });
     }
 });
 
@@ -808,7 +808,7 @@ router.post('/financials/adhoc/delete/:id', async (req, res) => {
         res.json({ success: true });
     } catch (error) {
         console.error('Error deleting adhoc fee:', error);
-        res.status(500).json({ success: false, message: 'Error deleting adhoc fee.' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Error deleting adhoc fee.' });
     }
 });
 
@@ -819,7 +819,7 @@ router.post('/financials/adhoc/upload', upload.single('file'), async (req, res) 
         const file = req.file;
 
         if (!file) {
-            return res.status(400).json({ success: false, message: 'No file uploaded' });
+            return res.status(BAD_REQUEST).json({ success: false, message: 'No file uploaded' });
         }
 
         const filePath = file.path;
@@ -830,7 +830,7 @@ router.post('/financials/adhoc/upload', upload.single('file'), async (req, res) 
             const worksheet = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
             if (!worksheet || worksheet.length === 0) {
-                return res.status(400).json({ success: false, message: 'Empty or invalid file format' });
+                return res.status(BAD_REQUEST).json({ success: false, message: 'Empty or invalid file format' });
             }
 
             console.log('Parsed worksheet data:', worksheet);
@@ -870,12 +870,12 @@ router.post('/financials/adhoc/upload', upload.single('file'), async (req, res) 
 
         } catch (error) {
             console.error('Error processing file:', error);
-            res.status(500).json({ success: false, message: 'Error processing the Excel file.' });
+            res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Error processing the Excel file.' });
         }
 
     } catch (error) {
         console.error('Error handling upload:', error);
-        res.status(500).json({ success: false, message: 'Error handling the upload.' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Error handling the upload.' });
     }
 });
 
@@ -893,7 +893,7 @@ router.get('/financials/adhoc/list', async (req, res) => {
         res.json({ success: true, data: result.recordset });
     } catch (error) {
         console.error('Error fetching Ad-Hoc Fees:', error);
-        res.status(500).json({ success: false, message: 'Failed to fetch Ad-Hoc Fees' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Failed to fetch Ad-Hoc Fees' });
     }
 });
 
@@ -903,7 +903,7 @@ router.put('/financials/adhoc/:id/edit', async (req, res) => {
     const id = parseInt(req.params.id, 10); // Ensure ID is parsed as an integer
 
     if (isNaN(id)) {
-        return res.status(400).json({ success: false, message: 'Invalid ID' });
+        return res.status(BAD_REQUEST).json({ success: false, message: 'Invalid ID' });
     }
 
     try {
@@ -925,7 +925,7 @@ router.put('/financials/adhoc/:id/edit', async (req, res) => {
         res.json({ success: true, message: 'Ad-Hoc Fee updated successfully' });
     } catch (error) {
         console.error('Error updating Ad-Hoc Fee:', error);
-        res.status(500).json({ success: false, message: 'Failed to update Ad-Hoc Fee' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Failed to update Ad-Hoc Fee' });
     }
 });
 
@@ -947,7 +947,7 @@ router.delete('/financials/adhoc/:id/delete', async (req, res) => {
         res.json({ success: true, message: 'Ad-Hoc Fee deleted successfully' });
     } catch (error) {
         console.error('Error deleting Ad-Hoc Fee:', error);
-        res.status(500).json({ success: false, message: 'Failed to delete Ad-Hoc Fee' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Failed to delete Ad-Hoc Fee' });
     }
 });
 
@@ -978,7 +978,7 @@ router.post('/financials/targets/upload', upload.single('file'), async (req, res
         res.json({ success: true, message: 'File processed and data inserted successfully!' });
     } catch (err) {
         console.error('Error processing file:', err);
-        res.status(500).json({ success: false, message: 'Failed to process file' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Failed to process file' });
     }
 });
 
@@ -998,7 +998,7 @@ router.get('/financials/targets/list', async (req, res) => {
         }
     } catch (err) {
         console.error('SQL error', err);
-        res.status(500).json({ success: false, message: 'Failed to fetch targets' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Failed to fetch targets' });
     }
 });
 
@@ -1024,7 +1024,7 @@ router.get('/financials/targets', async (req, res) => {
         }
     } catch (err) {
         console.error('SQL error', err);
-        res.status(500).send('Failed to fetch targets');
+        res.status(INTERNAL_SERVER_ERROR).send('Failed to fetch targets');
     }
 });
 
@@ -1057,7 +1057,7 @@ router.put('/financials/targets/:id/edit', async (req, res) => {
     } catch (err) {
         // Error handling
         console.error('SQL error during update:', err);
-        res.status(500).json({ success: false, message: 'Failed to update target' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Failed to update target' });
     }
 });
 
@@ -1082,12 +1082,12 @@ router.delete('/financials/targets/:id/delete', async (req, res) => {
         if (result.rowsAffected[0] > 0) {
             res.json({ success: true, message: 'Target deleted successfully!' });
         } else {
-            res.status(404).json({ success: false, message: 'Target not found' });
+            res.status(NOT_FOUND).json({ success: false, message: 'Target not found' });
         }
     } catch (err) {
         // Error handling
         console.error('SQL error during deletion:', err);
-        res.status(500).json({ success: false, message: 'Failed to delete target' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Failed to delete target' });
     }
 });
 
@@ -1115,7 +1115,7 @@ router.get('/api/company-details', async (req, res) => {
         }
     } catch (err) {
         console.error('SQL error', err);
-        res.status(500).json({ success: false, message: 'Failed to fetch company details' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Failed to fetch company details' });
     }
 });
 
@@ -1188,7 +1188,7 @@ router.put('/financials/company-details/edit', async (req, res) => {
         }
     } catch (err) {
         console.error('SQL error', err);
-        res.status(500).json({ success: false, message: 'Failed to update or insert company details' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Failed to update or insert company details' });
     }
 });
 

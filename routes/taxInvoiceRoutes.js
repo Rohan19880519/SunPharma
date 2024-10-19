@@ -35,7 +35,7 @@ router.get('/', async (req, res) => {
         res.render('tax-invoices', { invoices, customers });
     } catch (err) {
         console.error('Error fetching data:', err);
-        res.status(500).send('Error fetching invoices or customers.');
+        res.status(INTERNAL_SERVER_ERROR).send('Error fetching invoices or customers.');
     }
 });
 
@@ -63,7 +63,7 @@ router.get('/download-invoices', async (req, res) => {
         res.send(zipBuffer);
     } catch (err) {
         console.error('Error fetching invoices:', err);
-        res.status(500).send('Error fetching invoices');
+        res.status(INTERNAL_SERVER_ERROR).send('Error fetching invoices');
     }
 });
 
@@ -274,7 +274,7 @@ router.post('/generate-invoice', async (req, res) => { // Make sure the main fun
         console.log('Request received for generating invoice with startDate:', startDate, 'endDate:', endDate, 'customerId:', customerId);
 
         if (!startDate || !endDate || !customerId) {
-            return res.status(400).json({ message: 'Start date, End date, and Customer ID are required.' });
+            return res.status(BAD_REQUEST).json({ message: 'Start date, End date, and Customer ID are required.' });
         }
 
         const start = new Date(startDate).toISOString();
@@ -293,7 +293,7 @@ router.post('/generate-invoice', async (req, res) => { // Make sure the main fun
         const customers = customersResult.recordset;
 
         if (!customers || customers.length === 0) {
-            return res.status(404).json({ message: 'No customers found.' });
+            return res.status(NOT_FOUND).json({ message: 'No customers found.' });
         }
 
         const browser = await puppeteer.launch();
@@ -303,10 +303,10 @@ router.post('/generate-invoice', async (req, res) => { // Make sure the main fun
         await processCustomers(customers, start, end, pool, browser);
 
         await browser.close();
-        res.status(200).json({ message: 'Tax Invoices successfully generated.' });
+        res.status(SUCCESS).json({ message: 'Tax Invoices successfully generated.' });
     } catch (err) {
         console.error('Error generating tax invoices:', err);
-        res.status(500).json({ message: 'Error generating tax invoices', error: err.message });
+        res.status(INTERNAL_SERVER_ERROR).json({ message: 'Error generating tax invoices', error: err.message });
     }
 });
 
@@ -573,11 +573,11 @@ router.get('/download-invoice/:invoiceId', async (req, res) => {
             res.contentType('application/pdf');
             res.send(pdfBuffer);  // Send the PDF data as response
         } else {
-            res.status(404).send('Invoice not found');  // Handle case where invoice is not found
+            res.status(NOT_FOUND).send('Invoice not found');  // Handle case where invoice is not found
         }
     } catch (err) {
         console.error('Error fetching invoice:', err);
-        res.status(500).send('Error fetching invoice');
+        res.status(INTERNAL_SERVER_ERROR).send('Error fetching invoice');
     }
 });
 

@@ -48,7 +48,7 @@ router.post('/upload-sales', upload.single('fileUpload'), async (req, res) => {
     const file = req.file;
 
     if (!file) {
-        return res.status(400).json({ success: false, message: 'No file uploaded' });
+        return res.status(BAD_REQUEST).json({ success: false, message: 'No file uploaded' });
     }
 
     try {
@@ -127,7 +127,7 @@ router.post('/upload-sales', upload.single('fileUpload'), async (req, res) => {
         res.json({ success: true, message: 'Sales data uploaded and inserted successfully' });
     } catch (error) {
         console.error('Error processing file or inserting data:', error);
-        res.status(500).json({ success: false, message: 'Server error' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Server error' });
     }
 });
 
@@ -169,7 +169,7 @@ router.get('/load-more', async (req, res) => {
         res.json({ salesData });  // Return paginated data to the frontend
     } catch (error) {
         console.error('Error fetching sales data:', error);
-        res.status(500).json({ success: false, message: 'Error fetching sales data' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Error fetching sales data' });
     }
 });
 
@@ -211,7 +211,7 @@ router.get('/', async (req, res) => {  // Adjusted to root route
         res.render('sales', { salesData });
     } catch (error) {
         console.error('Error fetching sales data:', error);
-        res.status(500).json({ success: false, message: 'Error fetching sales data' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Error fetching sales data' });
     }
 });
 
@@ -219,7 +219,7 @@ router.get('/search', async (req, res) => {
     const searchQuery = req.query.query;
 
     if (!searchQuery) {
-        return res.status(400).json({ success: false, message: 'No search query provided' });
+        return res.status(BAD_REQUEST).json({ success: false, message: 'No search query provided' });
     }
 
     try {
@@ -253,7 +253,7 @@ router.get('/search', async (req, res) => {
         res.json({ salesData });
     } catch (error) {
         console.error('Error fetching search results:', error);
-        res.status(500).json({ success: false, message: 'Error fetching search results' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, message: 'Error fetching search results' });
     }
 });
 

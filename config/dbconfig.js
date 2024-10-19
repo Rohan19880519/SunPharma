@@ -42,9 +42,9 @@ exports.register = async (req, res) => {
       .input('approved', sql.Bit, 1) // Automatically approve the user or use 0 for manual approval
       .query(`INSERT INTO Users (username, password, approved) VALUES (@username, @password, @approved)`);
 
-    res.status(201).send('User registered successfully');
+    res.status(CREATED).send('User registered successfully');
   } catch (err) {
     console.error('Error registering user:', err);
-    res.status(500).send('Server error');
+    res.status(INTERNAL_SERVER_ERROR).send('Server error');
   }
 };

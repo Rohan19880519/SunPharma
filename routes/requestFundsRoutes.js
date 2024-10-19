@@ -262,10 +262,10 @@ router.post('/representatives/request-funds', async (req, res) => {
         // Await the sendApprovalEmail function
         await sendApprovalEmail('Manager', requestId, validPdfBuffer);
 
-        res.status(200).json({ message: 'Request for funds saved successfully!' });
+        res.status(SUCCESS).json({ message: 'Request for funds saved successfully!' });
     } catch (err) {
         console.error('Error saving request for funds:', err);
-        res.status(500).send('Error saving request for funds');
+        res.status(INTERNAL_SERVER_ERROR).send('Error saving request for funds');
     }
 });
 
@@ -281,7 +281,7 @@ router.post('/representatives/approval/:requestId/:role/:action', async (req, re
     };
 
     if (!['approve', 'reject'].includes(action) || !validRoles[role]) {
-        return res.status(400).json({ message: 'Invalid action or role' });
+        return res.status(BAD_REQUEST).json({ message: 'Invalid action or role' });
     }
 
     try {
@@ -359,10 +359,10 @@ router.post('/representatives/approval/:requestId/:role/:action', async (req, re
             }
         }
 
-        res.status(200).json({ message: `Request ${action}d successfully for ${role}` });
+        res.status(SUCCESS).json({ message: `Request ${action}d successfully for ${role}` });
     } catch (error) {
         console.error('Error updating approval status:', error);
-        res.status(500).json({ message: 'Error updating approval status' });
+        res.status(INTERNAL_SERVER_ERROR).json({ message: 'Error updating approval status' });
     }
 });
 
@@ -478,11 +478,11 @@ router.get('/representatives/download-pdf/:requestId', async (req, res) => {
             res.setHeader('Content-Disposition', `attachment; filename=RequestForFunds_${requestId}.pdf`);
             res.send(pdfData);
         } else {
-            res.status(404).send('PDF not found');
+            res.status(NOT_FOUND).send('PDF not found');
         }
     } catch (error) {
         console.error('Error fetching PDF data:', error);
-        res.status(500).send('Error fetching PDF data');
+        res.status(INTERNAL_SERVER_ERROR).send('Error fetching PDF data');
     }
 });
 

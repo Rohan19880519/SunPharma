@@ -14,7 +14,7 @@ exports.getAllCustomers = async (req, res) => {
         res.render('customers', { customers: result.recordset });
     } catch (err) {
         console.error('Error fetching customers:', err);
-        res.status(500).send('Server Error');
+        res.status(INTERNAL_SERVER_ERROR).send('Server Error');
     }
 };
 
@@ -31,7 +31,7 @@ const sanitizeString = (input) => {
 exports.uploadCustomers = async (req, res) => {
     try {
         if (!req.file) {
-            return res.status(400).send('No file uploaded');
+            return res.status(BAD_REQUEST).send('No file uploaded');
         }
 
         // Read the uploaded Excel file
@@ -102,7 +102,7 @@ exports.uploadCustomers = async (req, res) => {
         res.redirect('/customers');
     } catch (err) {
         console.error('Error uploading customers:', err);
-        res.status(500).send('Error processing file');
+        res.status(INTERNAL_SERVER_ERROR).send('Error processing file');
     }
 };
 
@@ -124,7 +124,7 @@ exports.deleteCustomer = async (req, res) => {
         res.redirect('/customers');
     } catch (err) {
         console.error('Error deleting customer:', err);
-        res.status(500).send('Server Error');
+        res.status(INTERNAL_SERVER_ERROR).send('Server Error');
     }
 };
 
@@ -146,6 +146,6 @@ exports.getSubCustomers = async (req, res) => {
         res.json({ subCustomers: result.recordset });
     } catch (err) {
         console.error('Error fetching sub-customers:', err);
-        res.status(500).json({ success: false, error: 'Server error' });
+        res.status(INTERNAL_SERVER_ERROR).json({ success: false, error: 'Server error' });
     }
 };

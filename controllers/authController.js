@@ -18,7 +18,7 @@ exports.login = async (req, res) => {
         // Check if the user exists
         if (result.recordset.length === 0) {
             console.log('Login failed: User not found');
-            return res.status(404).send('User not found');
+            return res.status(NOT_FOUND).send('User not found');
         }
 
         const user = result.recordset[0];
@@ -26,7 +26,7 @@ exports.login = async (req, res) => {
         // Check if the user's account is approved
         if (!user.approved) {
             console.log('Login failed: Account is pending approval');
-            return res.status(403).send('Your account is pending approval. Please contact the administrator.');
+            return res.status(FORBIDDEN).send('Your account is pending approval. Please contact the administrator.');
         }
 
         // Compare the provided password with the hashed password stored in the database
@@ -34,7 +34,7 @@ exports.login = async (req, res) => {
 
         if (!isValidPassword) {
             console.log('Login failed: Invalid password');
-            return res.status(401).send('Invalid password');
+            return res.status(UNAUTHORIZED).send('Invalid password');
         }
 
         // Store user information in the session, but avoid storing sensitive data
@@ -48,7 +48,7 @@ exports.login = async (req, res) => {
         res.redirect('/home'); // Redirect to the home page after successful login
     } catch (err) {
         console.error('Error during login:', err);
-        res.status(500).send('Server error during login');
+        res.status(INTERNAL_SERVER_ERROR).send('Server error during login');
     }
 };
 
@@ -71,10 +71,10 @@ exports.register = async (req, res) => {
             .query('INSERT INTO Users (username, password, email, approved) VALUES (@username, @password, @email, @approved)');
 
         console.log('User registered successfully:', username);
-        res.status(201).send('User registered successfully. Please wait for account approval.');
+        res.status(CREATED).send('User registered successfully. Please wait for account approval.');
     } catch (err) {
         console.error('Error during registration:', err);
-        res.status(500).send('Server error during registration');
+        res.status(INTERNAL_SERVER_ERROR).send('Server error during registration');
     }
 };
 
@@ -93,13 +93,13 @@ exports.resetPassword = async (req, res) => {
             .query('UPDATE Users SET password = @password WHERE email = @email');
 
         if (result.rowsAffected[0] === 0) {
-            return res.status(404).send('No user found with that email address.');
+            return res.status(NOT_FOUND).send('No user found with that email address.');
         }
 
-        res.status(200).send('Password reset successful.');
+        res.status(SUCCESS).send('Password reset successful.');
     } catch (err) {
         console.error('Error during password reset:', err);
-        res.status(500).send('Server error during password reset.');
+        res.status(INTERNAL_SERVER_ERROR).send('Server error during password reset.');
     }
 };
 
@@ -108,7 +108,7 @@ exports.logout = (req, res) => {
     req.session.destroy((err) => {
         if (err) {
             console.error('Error during logout:', err);
-            return res.status(500).send('Error during logout');
+            return res.status(INTERNAL_SERVER_ERROR).send('Error during logout');
         }
         res.clearCookie('connect.sid'); // Clear the session cookie
         console.log('User logged out successfully');
